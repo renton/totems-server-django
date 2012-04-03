@@ -7,7 +7,10 @@ import datetime
 class Totem(models.Model):
     id = UUIDField(primary_key=True)
     created = models.DateTimeField(editable=False)
+    last_activity = models.DateTimeField()
     worldlayer = models.ForeignKey(WorldLayer)
+
+    rating = models.IntegerField(default=50)
 
     active = models.BooleanField(default=True)
     is_spam = models.BooleanField(default=False)
@@ -32,6 +35,10 @@ class Totem(models.Model):
     def __unicode__(self):
         return self.id
 
+    def update_last_activity(self):
+        self.last_activity = datetime.now()
+        self.save()
+
 class TotemMessage(models.Model):
     id = UUIDField(primary_key=True)
     created = models.DateTimeField(editable=False)
@@ -41,6 +48,8 @@ class TotemMessage(models.Model):
     is_flagged = models.BooleanField(default=False)
 
     message = models.TextField()
+
+    rating = models.IntegerField(default=50)
 
     totem = models.ForeignKey(Totem)
     parent_message = models.ForeignKey('self', null=True)

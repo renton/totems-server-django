@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="span12">
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        Client
+                    </th>
+                    <th>
+                        Created
+                    </th>
+                    <th>
+                        Last Modified
+                    </th>
+                    <th>
+                        # Totems
+                    </th>
+                    <th>
+                        # Messages
+                    </th>
+                    <th>
+                        Banned
+                    </th>
+                    <th>
+                        Active
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for client in clients %}
+                <tr>
+                    <td>
+                        {{ client.pk }}
+                    </td>
+                    <td>
+                        {{ client.created }}
+                    </td>
+                    <td>
+                        {{ client.last_activity }}
+                    </td>
+                    <td>
+                        TEST
+                    </td>
+                    <td>
+                        TEST
+                    </td>
+                    <td>
+                        {{ client.is_banned }}
+                    </td>
+                    <td>
+                        {{ client.active }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

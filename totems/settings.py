@@ -105,10 +105,15 @@ ROOT_URLCONF = 'totems.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'totems.wsgi.application'
 
+import os
+dirname = os.path.dirname(globals()["__file__"])
+print dirname
+
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.join(dirname, 'templates'),
 )
 
 INSTALLED_APPS = (
@@ -123,6 +128,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'totems.core',
+    'totems.totems_admin'
 )
 
 # A sample logging configuration. The only tangible logging

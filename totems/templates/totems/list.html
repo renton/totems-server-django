@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="span12">
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        Totem
+                    </th>
+                    <th>
+                        Owner
+                    </th>
+                    <th>
+                        # Messages
+                    </th>
+                    <th>
+                        Rating
+                    </th>
+                    <th>
+                        Active
+                    </th>
+                    <th>
+                        Flagged
+                    </th>
+                    <th>
+                        Spam
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for totem in totems %}
+                <tr>
+                    <td>
+                        {{ totem.pk }}
+                    </td>
+
+                    <td>
+                        {{ totem.owner.pk }} 
+                    </td>
+                    <td>
+                        0
+                    </td>
+                    <td>
+                        {{ totem.rating }}
+                    </td>
+                    <td>
+                       {{ totem.active }}
+                    </td>
+                    <td>
+                        {{ totem.is_flagged }}
+                    </td>
+                    <td>
+                        {{ totem.is_spam }}         
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
