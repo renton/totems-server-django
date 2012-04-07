@@ -7,7 +7,7 @@ class Client(models.Model):
     id = UUIDField(primary_key=True)
     created = models.DateTimeField(editable=False)
     last_activity = models.DateTimeField()
-    device_id = models.TextField(blank=True)
+    device_id = models.TextField(null=False,unique=True)
     meta_data = models.TextField(blank=True)
     is_banned = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
@@ -42,21 +42,12 @@ class Client(models.Model):
         self.last_activity = datetime.datetime.utcnow().replace(tzinfo=utc)
         self.save()
 
-    def get_notifications(self):
-        pass
-
-    def get_num_totems(self):
-        pass
-
-    def get_num_messages(self):
-        pass
-
-    def get_latest_messages(self):
-        pass
-
     @staticmethod
-    def get_or_register_client():
-        pass
+    def get_or_register_client(device_id):
+        client, created = Client.objects.get_or_create(device_id=device_id)
+        if created:
+            client.save()
+        return client
 
     @staticmethod
     def __register_client():

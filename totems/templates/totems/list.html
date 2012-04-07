@@ -1,9 +1,16 @@
 {% extends "base.html" %}
 
+{% block totem_tab %}
+    class="active"
+{% endblock %}
+
 {% block content %}
 
 <div class="row">
     <div class="span12">
+
+        <a class="btn btn-primary" data-toggle="modal" href="#modalAddTotem" style="float:right;"><i class="icon-pencil icon-white"></i> Add Totem</a>
+        <div style="clear:both;"></div>
 
         <table class="table table-striped">
             <thead>
@@ -15,7 +22,16 @@
                         Owner
                     </th>
                     <th>
-                        # Messages
+                        Created
+                    </th>
+                    <th>
+                        Last_Activity
+                    </th>
+                    <th>
+                        Parent_Message
+                    </th>
+                    <th>
+                        #_Messages
                     </th>
                     <th>
                         Rating
@@ -35,14 +51,25 @@
             {% for totem in totems %}
                 <tr>
                     <td>
-                        {{ totem.pk }}
+                        <a href="{% url totemsDetail totem.pk %}">
+                            {{ totem.pk }}
+                        </a>
                     </td>
 
                     <td>
                         {{ totem.owner.pk }} 
                     </td>
                     <td>
-                        0
+                        {{ totem.created }}
+                    </td>
+                    <td>
+                        {{ totem.last_activity }}
+                    </td>
+                    <td>
+                        {{ totem.get_parent_message.message }}
+                    </td>
+                    <td>
+                        {{ totem.get_message_count }}
                     </td>
                     <td>
                         {{ totem.rating }}
@@ -61,5 +88,50 @@
             </tbody>
         </table>
     </div>
+</div>
+
+<div class="modal hide fade" id="modalAddTotem">
+
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+        <h3>Add Totem</h3>
+    </div>
+
+    <form class="form-horizontal" method="post" action=".">
+    {% csrf_token %}
+        <div class="modal-body">
+
+                <fieldset>
+                    <div class="control-group">
+
+                        <label class="control-label">World Layer</label>
+
+                        <div class="controls">
+                            <select name="layer" id="id_layer">
+                                {% for layer in layers %}
+                                <option>
+                                    {{ layer.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+
+                        <label class="control-label">Message</label>
+
+                        <div class="controls">
+                            <textarea name="message" id="id_message" class="input-xlarge" rows="3"></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+        </div>
+
+        <div class="modal-footer">
+            <a class="btn" data-dismiss="modal">Close</a>
+            <button class="btn btn-primary" type="submit">Add Totem</button>
+        </div>
+    </form>
 </div>
 {% endblock content %}

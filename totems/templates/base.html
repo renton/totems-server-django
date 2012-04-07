@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Bootstrap, from Twitter</title>
+    <title>Totems Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -41,13 +41,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">Project name</a>
+          <a class="brand" href="#">totems</a>
           <div class="nav-collapse">
             <ul class="nav">
 
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <li {% block client_tab %}{% endblock %}><a href="{% url clientsList %}"><i class="icon-user icon-white"></i> Clients</a></li>
+              <li {% block totem_tab %}{% endblock %}><a href="{% url totemsList %}"><i class="icon-edit icon-white"></i> Totems</a></li>
+              <li {% block message_tab %}{% endblock %}><a href="{% url messagesList %}"><i class="icon-comment icon-white"></i> Messages</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -62,11 +62,16 @@
 
     </div> <!-- /container -->
 
+
+
+
+
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="../assets/js/jquery.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery-1.7.2.min.js"></script>
     <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+    <script src="{{ STATIC_URL }}js/totems_admin.js"></script>
 
   </body>
 </html>
