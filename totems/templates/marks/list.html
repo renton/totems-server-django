@@ -1,7 +1,8 @@
+
 {% extends "base.html" %}
 
-{% block client_tab %}
-    active
+{% block mark_tab %}
+    class="active"
 {% endblock %}
 
 {% block content %}
@@ -13,59 +14,57 @@
             <thead>
                 <tr>
                     <th>
-                        Client
+                        Mark_ID
                     </th>
                     <th>
-                        Device
+                        Owner
+                    </th>
+                    <th>
+                        Message_ID
+                    </th>
+                    <th>
+                        Message
                     </th>
                     <th>
                         Created
                     </th>
                     <th>
-                        Last_Activity
+                        Last Activity
                     </th>
                     <th>
-                        #_Totems
+                        Mark Type
                     </th>
                     <th>
-                        #_Messages
-                    </th>
-                    <th>
-                        Banned
-                    </th>
-                    <th>
-                        Active
+                        State
                     </th>
                 </tr>
             </thead>
             <tbody>
-            {% for client in clients %}
+            {% for mark in marks %}
                 <tr>
                     <td>
-                        <a href="{% url clientsDetailed client.pk %}">
-                        {{ client.pk }}
-                        </a>
+                        {{ mark.pk }}
                     </td>
                     <td>
-                        {{ client.device_id }}
+                        {{ mark.client.pk }}
                     </td>
                     <td>
-                        {{ client.created }}
+                        {{ mark.totem_message.pk }}
                     </td>
                     <td>
-                        {{ client.last_activity }}
+                        {{ mark.totem_message.message }}
                     </td>
                     <td>
-                        {{ client.x_num_totems }}
+                        {{ mark.created }}
                     </td>
                     <td>
-                        {{ client.x_num_messages }}
+                        {{ mark.last_activity }}
                     </td>
                     <td>
-                        {{ client.is_banned }}
+                        {{ mark.mark_type }}
                     </td>
                     <td>
-                        {{ client.active }}
+                        {{ mark.state }}
                     </td>
                 </tr>
             {% endfor %}
@@ -73,4 +72,6 @@
         </table>
     </div>
 </div>
+
+
 {% endblock content %}

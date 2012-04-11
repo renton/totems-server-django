@@ -12,26 +12,21 @@ class Totem(models.Model):
     worldlayer = models.ForeignKey(WorldLayer)
 
     rating = models.IntegerField(default=50)
-
     active = models.BooleanField(default=True)
-    is_spam = models.BooleanField(default=False)
-    is_flagged = models.BooleanField(default=False)
-
     owner = models.ForeignKey(Client)
 
-    #point = models.PointField(srid=4326)
-    #objects = models.GeoManager()
+    point = models.PointField(srid=4326)
+    objects = models.GeoManager()
 
     class Meta:
         app_label = 'core'
         verbose_name = 'totem'
         verbose_name_plural = 'totems'
         
-
     def save(self, *args, **kwargs):
         if not self.id:
             self.created = datetime.datetime.utcnow().replace(tzinfo=utc)
-            self.last_activity = datetime.datetime.utcnow().replace(tzinfo=utc)
+        self.last_activity = datetime.datetime.utcnow().replace(tzinfo=utc)
         super(Totem, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -57,14 +52,6 @@ class Totem(models.Model):
         parent_message = self.get_parent_message()
         return parent_message.list_from_node()
 
-    def set_flagged(self):
-        self.is_flagged = True
-        self.save()
-
-    def set_spam(self):
-        self.is_spam = True
-        self.save()
-
     def remove(self):
         messages = TotemMessage.objects.filter(totem=self)
         for message in messages:
@@ -86,6 +73,7 @@ class Totem(models.Model):
         new_totem = Totem()
         new_totem.worldlayer = worldlayer
         new_totem.owner = client
+        new_totem.point = point
         new_totem.save()
 
         #create parent message
@@ -101,15 +89,9 @@ class Totem(models.Model):
 class TotemMessage(models.Model):
     id = UUIDField(primary_key=True)
     created = models.DateTimeField(editable=False)
-
     active = models.BooleanField(default=True)
-    is_spam = models.BooleanField(default=False)
-    is_flagged = models.BooleanField(default=False)
-
     message = models.TextField()
-
     rating = models.IntegerField(default=50)
-
     totem = models.ForeignKey(Totem)
     parent_message = models.ForeignKey('self', null=True, blank=True)
     owner = models.ForeignKey(Client)
@@ -179,32 +161,8 @@ class TotemMessage(models.Model):
             output = output + child.list_from_node(depth+50)
         return output
 
-    def mark_spam(self,client):
-        # get_or_create markspam model
-        pass
-
-    def mark_flag(self,client):
-        # get_or_create create markflag model
-        pass
-
-    def mark_upvote(self,client):
-        # get_or_create vote model - switch to up
-        pass
-
-    def mark_downvote(self,client):
-        # get_or
-        pass
-
     def remove(self):
         self.active = False
-        self.save()
-
-    def set_spam(self):
-        self.is_spam = True
-        self.save()
-
-    def set_flagged(self):
-        self.is_flagged = True
         self.save()
 
     @staticmethod

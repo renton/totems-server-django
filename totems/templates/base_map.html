@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script>
+    var map;
+    function initialize() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 5,
+            center: new google.maps.LatLng(41.879535, -87.624333),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+        var marker;
+        {% for point in points %}
+            marker = new google.maps.Marker(
+                {
+                    map: map,
+                    position: new google.maps.LatLng({{ point.y }},{{ point.x }})
+                }
+            );
+        {% endfor %}
+    }
+
+    </script>
+    <style>
+        body {font-family: sans-serif}
+        #map {width: 100%; height: 460px}
+    </style>
+
+    {% endblock %}
+
+{% block body_attributes %}
+    onload = 'initialize()'
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="span12">
+            <div id="map"></div>
+
+        </div>
+    </div>
+{% endblock %}

@@ -1,7 +1,7 @@
 
 {% extends "base.html" %}
 
-{% block message_tab %}
+{% block log_tab %}
     class="active"
 {% endblock %}
 
@@ -14,57 +14,40 @@
             <thead>
                 <tr>
                     <th>
-                        Message_ID
+                        Log_ID
                     </th>
                     <th>
                         Owner
                     </th>
                     <th>
-                        Totem
+                        Time
                     </th>
                     <th>
-                        Created
+                        Latitude
                     </th>
                     <th>
-                        Message
+                        Longitude
                     </th>
-                    <th>
-                        Rating
-                    </th>
-                    <th>
-                        Active
-                    </th>
-
                 </tr>
             </thead>
             <tbody>
-            {% for message in messages %}
+            {% for log in logs %}
                 <tr>
                     <td>
-                        {{ message.pk }}
-                    </td>
-
-                    <td>
-                        {{ message.owner.pk }} 
+                        {{ log.pk }}
                     </td>
                     <td>
-                        <a href="{% url totemsDetail message.totem.pk %}">
-                            {{ message.totem.pk }}
-                        </a>
+                        {{ log.client.pk }}
                     </td>
                     <td>
-                        {{ message.created }}
+                        {{ log.created }}
                     </td>
                     <td>
-                        {{ message.message }}
+                        {{ log.point.x }}
                     </td>
                     <td>
-                        {{ message.rating }}
+                        {{ log.point.y }}
                     </td>
-                    <td>
-                       {{ message.active }}
-                    </td>
-
                 </tr>
             {% endfor %}
             </tbody>

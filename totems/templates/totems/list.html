@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block totem_tab %}
-    class="active"
+    active
 {% endblock %}
 
 {% block content %}
@@ -39,12 +39,7 @@
                     <th>
                         Active
                     </th>
-                    <th>
-                        Flagged
-                    </th>
-                    <th>
-                        Spam
-                    </th>
+
                 </tr>
             </thead>
             <tbody>
@@ -77,12 +72,7 @@
                     <td>
                        {{ totem.active }}
                     </td>
-                    <td>
-                        {{ totem.is_flagged }}
-                    </td>
-                    <td>
-                        {{ totem.is_spam }}         
-                    </td>
+
                 </tr>
             {% endfor %}
             </tbody>

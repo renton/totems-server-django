@@ -10,12 +10,16 @@
     <!-- Le styles -->
 
     <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/totems_admin.css" rel="stylesheet">
+    <script src="{{ STATIC_URL }}js/jquery-1.7.2.min.js"></script>
     <style>
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
     </style>
     <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
+
+    {% block extra_head %}{% endblock %}
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -30,7 +34,7 @@
     <link rel="apple-touch-icon-precomposed" href="{{ STATIC_URL }}ico/apple-touch-icon-57-precomposed.png">
   </head>
 
-  <body>
+  <body {% block body_attributes %}{% endblock %}>
 
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
@@ -45,9 +49,42 @@
           <div class="nav-collapse">
             <ul class="nav">
 
-              <li {% block client_tab %}{% endblock %}><a href="{% url clientsList %}"><i class="icon-user icon-white"></i> Clients</a></li>
-              <li {% block totem_tab %}{% endblock %}><a href="{% url totemsList %}"><i class="icon-edit icon-white"></i> Totems</a></li>
+                <li class="dropdown {% block client_tab %}{% endblock %}">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="icon-user icon-white"></i>
+                        Clients
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="{% url clientsList %}">List</a>
+                        </li>
+                        <li>
+                            <a href="{% url clientsRegistrationMap %}">Registration Map</a>
+                        </li>
+                    </ul>
+                </li>
+              <li class="dropdown {% block totem_tab %}{% endblock %}">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="icon-map-marker icon-white"></i> 
+                    Totems
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="{% url totemsList %}">List</a>
+                    </li>
+                    <li>
+                        <a href="{% url totemsMap %}">Map</a>
+                    </li>
+                </ul>
+              </li>
               <li {% block message_tab %}{% endblock %}><a href="{% url messagesList %}"><i class="icon-comment icon-white"></i> Messages</a></li>
+              <li {% block mark_tab %}{% endblock %}><a href="{% url marksList %}"><i class="icon-arrow-down icon-white"></i> Marks</a></li>
+              <li {% block log_tab %}{% endblock %}><a href="{% url logsList %}"><i class="icon-list icon-white"></i> Logs</a></li>
+              <li {% block simulator_tab %}{% endblock %}><a href="{% url simulateTraffic %}"><i class="icon-cog icon-white"></i> Simulator</a></li>
+              <li {% block analytics_tab %}{% endblock %}><a href="#"><i class="icon-signal icon-white"></i> Analytics</a></li>
+
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -69,7 +106,7 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{{ STATIC_URL }}js/jquery-1.7.2.min.js"></script>
+
     <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
     <script src="{{ STATIC_URL }}js/totems_admin.js"></script>
 

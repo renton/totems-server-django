@@ -2,6 +2,7 @@ from django.contrib.gis.db import models
 from django_extensions.db.fields import UUIDField
 from clients import Client
 import datetime
+from django.utils.timezone import utc
 
 class BaseLog(models.Model):
 
@@ -14,14 +15,14 @@ class BaseLog(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.created = datetime.datetime.today()
+            self.created = datetime.datetime.utcnow().replace(tzinfo=utc)
         super(BaseLog, self).save(*args, **kwargs)
 
 class RequestLog(BaseLog):
 
     client = models.ForeignKey(Client)
-    #point = models.PointField(srid=4326)
-    #objects = models.GeoManager()
+    point = models.PointField(srid=4326)
+    objects = models.GeoManager()
 
     def __unicode__(self):
         return self.id
