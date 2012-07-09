@@ -73,7 +73,10 @@ class Totem(models.Model):
         new_totem = Totem()
         new_totem.worldlayer = worldlayer
         new_totem.owner = client
-        new_totem.point = point
+        if point is None:
+            new_totem.point = Client.create_random_point()
+        else:
+            new_totem.point = point
         new_totem.save()
 
         #create parent message
@@ -85,6 +88,8 @@ class Totem(models.Model):
         new_message.save()
 
         client.update_last_activity()
+
+        return new_totem
 
 class TotemMessage(models.Model):
     id = UUIDField(primary_key=True)

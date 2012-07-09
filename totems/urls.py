@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     url(r'^logs/$', 'totems.totems_admin.views.logs_list', name='logsList'),
     url(r'^marks/$', 'totems.totems_admin.views.marks_list', name='marksList'),
     url(r'^simulate/traffic/$', 'totems.totems_admin.views.simulate_traffic', name='simulateTraffic'),
+    url(r'^api/test/$', 'totems.api.views.test', name='apiTest'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

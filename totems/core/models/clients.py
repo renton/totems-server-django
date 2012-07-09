@@ -68,7 +68,3 @@ class Client(models.Model):
         if created:
             client.save()
         return client
-
-    @staticmethod
-    def __register_client():
-        pass

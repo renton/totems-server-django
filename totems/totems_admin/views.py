@@ -138,10 +138,21 @@ def marks_list(request):
     return render_to_response("marks/list.html",c,context_instance=RequestContext(request))
 
 def simulate_traffic(request):
-    for i in range(0,20):
+    new_clients = []
+    for i in range(0,10):
         c = Client.get_or_register_client(os.urandom(16).encode('hex'))
-        for j in range(0,20):
-            Totem.add_totem(c,Client.create_random_point(),os.urandom(16).encode('hex'),WorldLayer.objects.get())
+        new_clients.append(c)
+
+    new_totems = []
+    for client in new_clients:
+        for j in range(0,10):
+            t = Totem.add_totem(client,Client.create_random_point(),os.urandom(16).encode('hex'),WorldLayer.objects.get())
+            new_totems.append(t)
+
+    for client in new_clients:
+        for totem in new_totems:
+            totem.get_parent_message().reply_message(os.urandom(16).encode('hex'),client)
+
     c={}
     return render_to_response("clients/list.html",c,context_instance=RequestContext(request))
 
