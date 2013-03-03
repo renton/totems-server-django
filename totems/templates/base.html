@@ -26,12 +26,6 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="{{ STATIC_URL }}ico/favicon.ico">
-
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ STATIC_URL }}ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ STATIC_URL }}ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="{{ STATIC_URL }}ico/apple-touch-icon-57-precomposed.png">
   </head>
 
   <body {% block body_attributes %}{% endblock %}>
@@ -57,10 +51,10 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="{% url clientsList %}">List</a>
+                            <a href="{% url "clientsList" %}">List</a>
                         </li>
                         <li>
-                            <a href="{% url clientsRegistrationMap %}">Registration Map</a>
+                            <a href="{% url "clientsRegistrationMap" %}">Registration Map</a>
                         </li>
                     </ul>
                 </li>
@@ -72,19 +66,20 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="{% url totemsList %}">List</a>
+                        <a href="{% url "totemsList" %}">List</a>
                     </li>
                     <li>
-                        <a href="{% url totemsMap %}">Map</a>
+                        <a href="{% url "totemsMap" %}">Map</a>
                     </li>
                 </ul>
               </li>
-              <li {% block message_tab %}{% endblock %}><a href="{% url messagesList %}"><i class="icon-comment icon-white"></i> Messages</a></li>
-              <li {% block mark_tab %}{% endblock %}><a href="{% url marksList %}"><i class="icon-arrow-down icon-white"></i> Marks</a></li>
-              <li {% block log_tab %}{% endblock %}><a href="{% url logsList %}"><i class="icon-list icon-white"></i> Logs</a></li>
-              <li {% block simulator_tab %}{% endblock %}><a href="{% url simulateTraffic %}"><i class="icon-cog icon-white"></i> Simulator</a></li>
+              <li {% block message_tab %}{% endblock %}><a href="{% url "messagesList" %}"><i class="icon-comment icon-white"></i> Messages</a></li>
+<!--
+              <li {% block mark_tab %}{% endblock %}><a href="{% url "marksList" %}"><i class="icon-arrow-down icon-white"></i> Marks</a></li>
+              <li {% block log_tab %}{% endblock %}><a href="{% url "logsList" %}"><i class="icon-list icon-white"></i> Logs</a></li>
+              <li {% block simulator_tab %}{% endblock %}><a href="{% url "simulateTraffic" %}"><i class="icon-cog icon-white"></i> Simulator</a></li>
               <li {% block analytics_tab %}{% endblock %}><a href="#"><i class="icon-signal icon-white"></i> Analytics</a></li>
-
+-->
             </ul>
           </div><!--/.nav-collapse -->
         </div>

@@ -3,7 +3,8 @@ from django.template import RequestContext
 from django.http import HttpResponse
 from django.utils import simplejson
 import os
-from totems.core.models import Client, Totem, TotemMessage, WorldLayer, Mark, RequestLog
+from totems.models import Client, Totem, TotemMessage, WorldLayer
+from random import randrange
 
 def home(request):
     c = {}
@@ -74,7 +75,7 @@ def totems_list(request):
             if request.POST['message'] != "":
                 admin = Client.get_or_register_client("admin")
                 layer = WorldLayer.objects.get(name=request.POST['layer'])
-                Totem.add_totem(admin,None,request.POST['message'],layer)
+                Totem.add_totem(admin,randrange(-180,180),randrange(-90,90),request.POST['message'],layer)
 
     totems = Totem.objects.all().order_by('-last_activity')
     layers = WorldLayer.objects.all()
@@ -88,7 +89,7 @@ def totems_map(request):
     totems = Totem.objects.all()
     points = []
     for totem in totems:
-        points.append(totem.point)
+        points.append((totem.longitude,totem.latitude))
     c = {
         'points':points
     }
@@ -108,6 +109,7 @@ def totems_detail(request,TotemID):
     parent = totem.get_parent_message()
     messages = parent.list_from_node()
 
+    '''
     for message in messages:
         message[1].x_num_spam_marks = Mark.get_mark_count_for_message(message[1],Mark.MARK_TYPE_SPAM)
         message[1].x_num_flag_marks = Mark.get_mark_count_for_message(message[1],Mark.MARK_TYPE_REPORT)
@@ -116,6 +118,16 @@ def totems_detail(request,TotemID):
         message[1].x_is_marked_flag = Mark.is_marked_for_client(admin,message[1],Mark.MARK_TYPE_REPORT)
         message[1].x_is_marked_upvote = Mark.is_marked_for_client(admin,message[1],Mark.MARK_TYPE_UPVOTE)
         message[1].x_is_marked_downvote = Mark.is_marked_for_client(admin,message[1],Mark.MARK_TYPE_DOWNVOTE)
+    '''
+    for message in messages:
+        message[1].x_num_spam_marks = 0
+        message[1].x_num_flag_marks = 0
+        message[1].x_num_vote_marks = 0
+        message[1].x_is_marked_spam = False
+        message[1].x_is_marked_flag = False
+        message[1].x_is_marked_upvote = False
+        message[1].x_is_marked_downvote = False
+
 
     c = {
         'totem':totem,

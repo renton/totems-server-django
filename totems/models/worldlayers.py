@@ -1,14 +1,12 @@
 from django.db import models
-from django_extensions.db.fields import UUIDField
 import datetime
 
 class WorldLayer(models.Model):
-    id = UUIDField(primary_key=True)
     name = models.CharField(max_length=30)
     created = models.DateTimeField(editable=False)
 
     class Meta:
-        app_label = 'core'
+        app_label = 'totems'
 
     def save(self, *args, **kwargs):
         if not self.id:

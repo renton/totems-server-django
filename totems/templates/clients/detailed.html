@@ -8,7 +8,7 @@
 <div class="row">
     <div class="span12">
 
-        <h2>{{ client.pk }}</h2><a href="{% url clientsActivityMap client.pk %}">Activity Map</a>
+        <h2>{{ client.pk }}</h2><a href="{% url "clientsActivityMap" client.pk %}">Activity Map</a>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -41,7 +41,7 @@
             <tbody>
                 <tr>
                     <td>
-                        <a href="{% url clientsActivityMap client.pk %}">
+                        <a href="{% url "clientsActivityMap" client.pk %}">
                         {{ client.pk }}
                         </a>
                     </td>
@@ -104,7 +104,7 @@
             {% for totem in totems %}
                 <tr>
                     <td>
-                        <a href="{% url totemsDetail totem.pk %}">
+                        <a href="{% url "totemsDetail" totem.pk %}">
                             {{ totem.pk }}
                         </a>
                     </td>
@@ -175,7 +175,7 @@
                         {{ message.owner.pk }} 
                     </td>
                     <td>
-                        <a href="{% url totemsDetail message.totem.pk %}">
+                        <a href="{% url "totemsDetail" message.totem.pk %}">
                             {{ message.totem.pk }}
                         </a>
                     </td>

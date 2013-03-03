@@ -46,7 +46,7 @@
             {% for totem in totems %}
                 <tr>
                     <td>
-                        <a href="{% url totemsDetail totem.pk %}">
+                        <a href="{% url "totemsDetail" totem.pk %}">
                             {{ totem.pk }}
                         </a>
                     </td>

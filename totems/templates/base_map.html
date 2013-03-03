@@ -15,7 +15,7 @@
             marker = new google.maps.Marker(
                 {
                     map: map,
-                    position: new google.maps.LatLng({{ point.y }},{{ point.x }})
+                    position: new google.maps.LatLng({{ point.0 }},{{ point.1 }})
                 }
             );
         {% endfor %}
@@ -24,7 +24,7 @@
     </script>
     <style>
         body {font-family: sans-serif}
-        #map {width: 100%; height: 460px}
+        #map {width: 100%; height: 660px}
     </style>
 
     {% endblock %}

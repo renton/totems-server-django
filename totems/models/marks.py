@@ -1,7 +1,6 @@
 from django.db import models
 from clients import Client
 from totems import TotemMessage
-from django_extensions.db.fields import UUIDField
 import datetime
 from django.utils.timezone import utc
 
@@ -12,7 +11,6 @@ class Mark(models.Model):
     MARK_TYPE_UPVOTE = 2
     MARK_TYPE_DOWNVOTE = 3
 
-    id = UUIDField(primary_key=True)
     created = models.DateTimeField(editable=False)
     client = models.ForeignKey(Client)
     totem_message = models.ForeignKey(TotemMessage)

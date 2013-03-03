@@ -42,7 +42,7 @@
             {% for client in clients %}
                 <tr>
                     <td>
-                        <a href="{% url clientsDetailed client.pk %}">
+                        <a href="{% url "clientsDetailed" client.pk %}">
                         {{ client.pk }}
                         </a>
                     </td>

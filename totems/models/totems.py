@@ -1,12 +1,10 @@
-from django.contrib.gis.db import models
-from django_extensions.db.fields import UUIDField
+from django.db import models
 from worldlayers import WorldLayer
 from clients import Client
 import datetime
 from django.utils.timezone import utc
 
 class Totem(models.Model):
-    id = UUIDField(primary_key=True)
     created = models.DateTimeField(editable=False)
     last_activity = models.DateTimeField()
     worldlayer = models.ForeignKey(WorldLayer)
@@ -15,11 +13,11 @@ class Totem(models.Model):
     active = models.BooleanField(default=True)
     owner = models.ForeignKey(Client)
 
-    point = models.PointField(srid=4326)
-    objects = models.GeoManager()
+    longitude = models.FloatField()
+    latitude = models.FloatField()
 
     class Meta:
-        app_label = 'core'
+        app_label = 'totems'
         verbose_name = 'totem'
         verbose_name_plural = 'totems'
         
@@ -31,10 +29,6 @@ class Totem(models.Model):
 
     def __unicode__(self):
         return self.id
-
-    def update_last_activity(self):
-        self.last_activity = datetime.datetime.utcnow().replace(tzinfo=utc)
-        self.save()
 
     def get_message_count(self):
         return TotemMessage.objects.filter(totem=self).count()
@@ -68,15 +62,13 @@ class Totem(models.Model):
         return Totem.objects.filter(owner=client)
 
     @staticmethod
-    def add_totem(client,point,message,worldlayer):
+    def add_totem(client,longitude,latitude,message,worldlayer):
         #create totem
         new_totem = Totem()
         new_totem.worldlayer = worldlayer
         new_totem.owner = client
-        if point is None:
-            new_totem.point = Client.create_random_point()
-        else:
-            new_totem.point = point
+        new_totem.longitude = longitude
+        new_totem.latitude = latitude
         new_totem.save()
 
         #create parent message
@@ -87,12 +79,11 @@ class Totem(models.Model):
         new_message.parent_message = None
         new_message.save()
 
-        client.update_last_activity()
+        client.save()
 
         return new_totem
 
 class TotemMessage(models.Model):
-    id = UUIDField(primary_key=True)
     created = models.DateTimeField(editable=False)
     active = models.BooleanField(default=True)
     message = models.TextField()
@@ -102,7 +93,7 @@ class TotemMessage(models.Model):
     owner = models.ForeignKey(Client)
 
     class Meta:
-        app_label = 'core'
+        app_label = 'totems'
         verbose_name = 'message'
         verbose_name_plural = 'messages'
 
@@ -111,7 +102,7 @@ class TotemMessage(models.Model):
             self.created = datetime.datetime.utcnow().replace(tzinfo=utc)
         #update last modified of parent totem
         if self.totem:
-            self.totem.update_last_activity()
+            self.totem.save()
         super(TotemMessage, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -137,7 +128,7 @@ class TotemMessage(models.Model):
         reply.totem = self.totem
         reply.save()
 
-        self.owner.update_last_activity()
+        self.owner.save()
 
     def build_message_tree_from_node(self):
         #TODO - expensive. too many db calls

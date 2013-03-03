@@ -1,5 +1,3 @@
-from django.contrib.gis.db import models
-from django_extensions.db.fields import UUIDField
 from clients import Client
 import datetime
 from django.utils.timezone import utc

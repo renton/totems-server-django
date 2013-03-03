@@ -1,26 +1,28 @@
-from django.contrib.gis.db import models
-from django.contrib.gis.geos import *
-from django_extensions.db.fields import UUIDField
+from django.db import models
 import datetime
 from django.utils.timezone import utc
-import random
+from random import randrange
+import os
 
 class Client(models.Model):
-    id = UUIDField(primary_key=True)
     created = models.DateTimeField(editable=False)
     last_activity = models.DateTimeField()
+
     device_id = models.TextField(null=False,unique=True)
-    meta_data = models.TextField(blank=True)
+    device_name = models.TextField(null=False)
+    device_version = models.TextField(null=False)
+    device_platform = models.TextField(null=False)
+
     is_banned = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
 
     is_bot = models.BooleanField(default=False)
 
-    registration_point = models.PointField(srid=4326)
-    objects = models.GeoManager()
+    registration_longitude = models.FloatField()
+    registration_latitude = models.FloatField()
 
     class Meta:
-        app_label = 'core'
+        app_label = 'totems'
         verbose_name = 'client'
         verbose_name_plural = 'clients'
 
@@ -45,17 +47,9 @@ class Client(models.Model):
         self.is_banned = False
         self.save()
 
-    def update_last_activity(self):
-        self.last_activity = datetime.datetime.utcnow().replace(tzinfo=utc)
-        self.save()
-
     def remove_all_activity(self):
         #remove all totems,messages,marks
         pass
-
-    @staticmethod
-    def create_random_point():
-        return Point(random.randrange(-180,180),random.randrange(-85,85))
 
     @staticmethod
     def remove_bot_activity():
@@ -63,8 +57,16 @@ class Client(models.Model):
         pass
 
     @staticmethod
-    def get_or_register_client(device_id,is_bot=False):
-        client, created = Client.objects.get_or_create(device_id=device_id, defaults={'is_bot':is_bot,'registration_point':Client.create_random_point()})
+    def gen_bots(amount):
+        for i in range(amount):
+            r_long = randrange(-180,180)
+            r_lat = randrange(-90,90)
+            r_id = os.urandom(16).encode('hex')
+            Client.get_or_register_client(r_id,"fake device","fake platform","1.0",r_long,r_lat,True)
+
+    @staticmethod
+    def get_or_register_client(device_id,device_name="unknown",device_platform="unknown",device_version="unknown",longitude=None,latitude=None,is_bot=False):
+        client, created = Client.objects.get_or_create(device_id=device_id,defaults={'device_name':device_name,'device_platform':device_platform,'device_version':device_version,'is_bot':is_bot,'registration_longitude':longitude,'registration_latitude':latitude})
         if created:
             client.save()
         return client
