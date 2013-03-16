@@ -1,9 +1,4 @@
 .message {
-    background:#eee;
-    margin-bottom:10px;
+    background:#dcdcdc;
     padding:10px;
-}
-
-.message.deleted {
-    background:#f2dede; !important
 }

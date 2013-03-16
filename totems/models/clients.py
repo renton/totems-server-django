@@ -33,7 +33,7 @@ class Client(models.Model):
         super(Client, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return self.id
+        return str(self.id)
 
     def deactivate(self):
         self.active = False
@@ -69,4 +69,4 @@ class Client(models.Model):
         client, created = Client.objects.get_or_create(device_id=device_id,defaults={'device_name':device_name,'device_platform':device_platform,'device_version':device_version,'is_bot':is_bot,'registration_longitude':longitude,'registration_latitude':latitude})
         if created:
             client.save()
-        return client
+        return client, created

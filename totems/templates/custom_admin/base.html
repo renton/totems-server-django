@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/totems_admin.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+
+    {% block extra_head %}
+    {% endblock extra_head %}
+
+  </head>
+
+  <body {% block body_attributes %}{% endblock body_attributes %}>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="{% url "home" %}">totems</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                    Clients
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="{% url "clients_list" %}">List</a></li>
+                  <li><a href="{% url "clients_registration_map" %}">Map</a></li>
+                </ul>
+            </ul>
+            <ul class="nav">
+                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                    Totems
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="{% url "totems_list" %}">List</a></li>
+                  <li><a href="{% url "totems_map" %}">Map</a></li>
+                </ul>
+            </ul>
+
+            <ul class="nav">
+                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                    API Test
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="{% url "apitest_register" %}">register</a></li>
+                  <li><a href="{% url "apitest_add_totem" %}">add_totem</a></li>
+                  <li><a href="{% url "apitest_add_reply" %}">add_reply</a></li>
+                </ul>
+
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+        {% block content %}
+        {% endblock %}
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{{ STATIC_URL }}js/jquery-1.9.1.min.js"></script>
+    <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+    <script src="{{ STATIC_URL }}js/totems_admin.js"></script>
+
+  </body>
+</html>
+

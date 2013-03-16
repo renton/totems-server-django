@@ -6,21 +6,121 @@ import os
 from totems.models import Client, Totem, TotemMessage, WorldLayer
 from random import randrange
 
+ROWS_PER_PAGE = 100
+
 def home(request):
     c = {}
-    return render_to_response("base.html",c,context_instance=RequestContext(request))
+    return render_to_response("custom_admin/base.html",c,context_instance=RequestContext(request))
 
-def clients_list(request):
+
+def clients_list(request,sort_param=None):
+
     clients = Client.objects.all().order_by('-last_activity')
+
     c = {
         'clients':clients
     }
 
     for client in clients:
-        client.x_num_messages = TotemMessage.objects.filter(owner=client).count()
-        client.x_num_totems = Totem.objects.filter(owner=client).count()
+        client.x_num_messages = TotemMessage.get_message_count_by_client(client)
+        client.x_num_totems = Totem.get_totem_count_by_client(client)
 
-    return render_to_response("clients/list.html",c,context_instance=RequestContext(request))
+    return render_to_response("custom_admin/clients/list.html",c,context_instance=RequestContext(request))
+
+def clients_registration_map(request):
+    clients = Client.objects.all()
+    points = []
+    for client in clients:
+        points.append((client.registration_longitude,client.registration_latitude))
+
+    c = {
+        'points':points
+    }
+    return render_to_response("custom_admin/clients/registration_map.html",c,context_instance=RequestContext(request))
+
+def totems_list(request):
+
+    totems = Totem.objects.all().order_by('-last_activity')
+
+    c = {
+        'totems':totems,
+    }
+    return render_to_response("custom_admin/totems/list.html",c,context_instance=RequestContext(request))
+
+def totems_detail(request,TotemID):
+
+    admin = Client.get_or_register_client("admin")
+    #TODO proper form
+    if request.method == "POST":
+        if 'message' in request.POST and 'parent_message_id' in request.POST:
+            if request.POST['message'] != "":
+                parent = TotemMessage.objects.get(pk=request.POST['parent_message_id'])
+                parent.reply_message(request.POST['message'],admin)
+
+    totem = Totem.objects.get(pk=TotemID)
+    parent = totem.get_parent_message()
+    messages = parent.list_from_node()
+
+    c = {
+        'totem':totem,
+        'messages':messages
+    }
+
+    return render_to_response("custom_admin/totems/detail.html",c,context_instance=RequestContext(request))
+
+def totems_map(request):
+    totems = Totem.objects.all()
+    points = []
+    for totem in totems:
+        points.append((totem.longitude,totem.latitude))
+    c = {
+        'points':points
+    }
+    return render_to_response("custom_admin/totems/map.html",c,context_instance=RequestContext(request))
+
+def apitest_register(request):
+    c={}
+
+    c['api_call_name'] = "register"
+    c['required_params'] = [
+        'device_id',
+        'device_name',
+        'device_version',
+        'device_platform',
+        'registration_longitude',
+        'registration_latitude',
+    ]
+
+    return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
+
+def apitest_add_totem(request):
+    c={}
+
+    c['api_call_name'] = "add_totem"
+    c['required_params'] = [
+        'device_id',
+        'longitude',
+        'latitude',
+        'message',
+        'worldlayer_id',
+    ]
+
+    return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
+
+def apitest_add_reply(request):
+    c={}
+
+    c['api_call_name'] = "add_reply"
+    c['required_params'] = [
+        'device_id',
+        'parent_message_id',
+        'message',
+        'worldlayer_id',
+    ]
+
+    return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
+
+'''
 
 def clients_detailed(request,ClientID):
     client = Client.objects.get(pk=ClientID)
@@ -49,17 +149,10 @@ def clients_activity_map(request,ClientID=None):
     }
     return render_to_response("clients/activity_map.html",c,context_instance=RequestContext(request))
 
-def clients_registration_map(request):
-    clients = Client.objects.all()
-    points = []
-    for client in clients:
-        points.append(client.registration_point)
+'''
 
-    c = {
-        'points':points
-    }
-    return render_to_response("clients/map.html",c,context_instance=RequestContext(request))
 
+'''
 def logs_list(request):
     logs = RequestLog.objects.all().order_by('-created')
     c = {
@@ -67,73 +160,11 @@ def logs_list(request):
     }
     return render_to_response("logs/list.html",c,context_instance=RequestContext(request))
 
-def totems_list(request):
 
-    #TODO proper form
-    if request.method == "POST":
-        if 'message' in request.POST and 'layer' in request.POST:
-            if request.POST['message'] != "":
-                admin = Client.get_or_register_client("admin")
-                layer = WorldLayer.objects.get(name=request.POST['layer'])
-                Totem.add_totem(admin,randrange(-180,180),randrange(-90,90),request.POST['message'],layer)
 
-    totems = Totem.objects.all().order_by('-last_activity')
-    layers = WorldLayer.objects.all()
-    c = {
-        'totems':totems,
-        'layers':layers
-    }
-    return render_to_response("totems/list.html",c,context_instance=RequestContext(request))
 
-def totems_map(request):
-    totems = Totem.objects.all()
-    points = []
-    for totem in totems:
-        points.append((totem.longitude,totem.latitude))
-    c = {
-        'points':points
-    }
-    return render_to_response("totems/map.html",c,context_instance=RequestContext(request))
     
-def totems_detail(request,TotemID):
 
-    admin = Client.get_or_register_client("admin")
-    #TODO proper form
-    if request.method == "POST":
-        if 'message' in request.POST and 'parent_message_id' in request.POST:
-            if request.POST['message'] != "":
-                parent = TotemMessage.objects.get(pk=request.POST['parent_message_id'])
-                parent.reply_message(request.POST['message'],admin)
-
-    totem = Totem.objects.get(pk=TotemID)
-    parent = totem.get_parent_message()
-    messages = parent.list_from_node()
-
-    '''
-    for message in messages:
-        message[1].x_num_spam_marks = Mark.get_mark_count_for_message(message[1],Mark.MARK_TYPE_SPAM)
-        message[1].x_num_flag_marks = Mark.get_mark_count_for_message(message[1],Mark.MARK_TYPE_REPORT)
-        message[1].x_num_vote_marks = Mark.get_mark_count_for_message(message[1],Mark.MARK_TYPE_UPVOTE) - Mark.get_mark_count_for_message(message[1],Mark.MARK_TYPE_DOWNVOTE)
-        message[1].x_is_marked_spam = Mark.is_marked_for_client(admin,message[1],Mark.MARK_TYPE_SPAM)
-        message[1].x_is_marked_flag = Mark.is_marked_for_client(admin,message[1],Mark.MARK_TYPE_REPORT)
-        message[1].x_is_marked_upvote = Mark.is_marked_for_client(admin,message[1],Mark.MARK_TYPE_UPVOTE)
-        message[1].x_is_marked_downvote = Mark.is_marked_for_client(admin,message[1],Mark.MARK_TYPE_DOWNVOTE)
-    '''
-    for message in messages:
-        message[1].x_num_spam_marks = 0
-        message[1].x_num_flag_marks = 0
-        message[1].x_num_vote_marks = 0
-        message[1].x_is_marked_spam = False
-        message[1].x_is_marked_flag = False
-        message[1].x_is_marked_upvote = False
-        message[1].x_is_marked_downvote = False
-
-
-    c = {
-        'totem':totem,
-        'messages':messages
-    }
-    return render_to_response("totems/detail.html",c,context_instance=RequestContext(request))
 
 def messages_list(request):
     messages = TotemMessage.objects.all().order_by('-created')
@@ -192,3 +223,4 @@ def ajax_mark_downvote(request,MessageID):
     msg_to_mark = TotemMessage.objects.get(pk=MessageID)
     vote_mark = Mark.create_or_toggle_mark(Client.get_or_register_client("admin"),msg_to_mark,Mark.MARK_TYPE_DOWNVOTE)
     return HttpResponse(simplejson.dumps({'success':True,'state':vote_mark.state}))
+'''

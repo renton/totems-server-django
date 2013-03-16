@@ -1,7 +1,18 @@
-var base_url = "http://69.164.222.39:8000/";
+var base_url = "http://127.0.0.1:8000/";
 
 $(document).ready(function() {
 
+    $('body').on("click",'#apitester_register',function() {
+        testapi("api/register/")
+    });
+    $('body').on("click",'#apitester_add_totem',function() {
+        testapi("api/add_totem/")
+    });
+    $('body').on("click",'#apitester_add_reply',function() {
+        testapi("api/add_reply/")
+    });
+
+    /*
     $(".action_render_reply_modal").live("click", function() {
         $("#modalAddReply").modal('show');
         $("#id_parent_message_id").val($(this).attr("data-id"));
@@ -81,8 +92,37 @@ $(document).ready(function() {
 
         });
     });
+*/
 
 });
+
+function testapi(url) {
+
+    var $form = $("#apitester_form");
+    var data = $form.serializeObject();
+
+    ajax(url,data, function(response) {
+        $("#apitester_result").html(JSON.stringify(response));
+    });
+
+};
+
+$.fn.serializeObject = function()
+{
+   var o = {};
+   var a = this.serializeArray();
+   $.each(a, function() {
+       if (o[this.name]) {
+           if (!o[this.name].push) {
+               o[this.name] = [o[this.name]];
+           }
+           o[this.name].push(this.value || '');
+       } else {
+           o[this.name] = this.value || '';
+       }
+   });
+   return o;
+};
 
 function ajax(url, data, success) {
     

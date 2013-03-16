@@ -1,16 +1,9 @@
-{% extends "base.html" %}
-
-{% block totem_tab %}
-    active
-{% endblock %}
+{% extends "custom_admin/base.html" %}
 
 {% block content %}
 
 <div class="row">
     <div class="span12">
-
-        <a class="btn btn-primary" data-toggle="modal" href="#modalAddTotem" style="float:right;"><i class="icon-pencil icon-white"></i> Add Totem</a>
-        <div style="clear:both;"></div>
 
         <table class="table table-striped">
             <thead>
@@ -34,9 +27,6 @@
                         #_Messages
                     </th>
                     <th>
-                        Rating
-                    </th>
-                    <th>
                         Active
                     </th>
 
@@ -46,13 +36,13 @@
             {% for totem in totems %}
                 <tr>
                     <td>
-                        <a href="{% url "totemsDetail" totem.pk %}">
+                        <a href="{% url "totems_detail" totem.pk %}">
                             {{ totem.pk }}
                         </a>
                     </td>
 
                     <td>
-                        {{ totem.owner.pk }} 
+                        {{ totem.owner.pk }}
                     </td>
                     <td>
                         {{ totem.created }}
@@ -65,9 +55,6 @@
                     </td>
                     <td>
                         {{ totem.get_message_count }}
-                    </td>
-                    <td>
-                        {{ totem.rating }}
                     </td>
                     <td>
                        {{ totem.active }}

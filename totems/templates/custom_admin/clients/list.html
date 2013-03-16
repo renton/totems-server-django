@@ -1,0 +1,40 @@
+{% extends "custom_admin/base.html" %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="span12">
+            <table class="table table-striped">
+
+                <tr>
+                    <th>id</a></th>
+                    <th>device id</th>
+                    <th>platform</th>
+                    <th>banned</th>
+                    <th>active</th>
+                    <th>bot</th>
+                    <th>msgs</th>
+                    <th>totems</th>
+                    <th>latest</th>
+                    <th>created</th>
+                </tr>
+
+                {% for client in clients %} 
+                    <tr {% if client.is_banned %}style="background:#ccffff"{% endif %}>
+                        <td>{{ client.pk }}</td>
+                        <td>{{ client.device_id|truncatechars:8 }}</td>
+                        <td>{{ client.device_platform|truncatechars:10 }}</td>
+                        <td>{{ client.is_banned }}</td>
+                        <td>{{ client.active }}</td>
+                        <td>{{ client.is_bot }}</td>
+                        <td>{{ client.x_num_messages }}</td>
+                        <td>{{ client.x_num_totems }}</td>
+                        <td>{{ client.last_activity }}</td>
+                        <td>{{ client.created }}</td>
+                    </tr>
+                {% endfor %}
+
+            </table>
+        </div>
+    </div>
+{% endblock content %}

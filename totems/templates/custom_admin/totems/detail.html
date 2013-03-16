@@ -1,8 +1,4 @@
-{% extends "base.html" %}
-
-{% block totem_tab %}
-    class="active"
-{% endblock %}
+{% extends "custom_admin/base.html" %}
 
 {% block content %}
 
@@ -15,13 +11,12 @@
     {% for message in messages %}
 
         <div class="message
-        {% if not message.1.active %}
-            deleted
-        {% endif %}
-        " style="margin-left:{{ message.0 }}px;" id="msg-{{ message.1.pk }}">
+{% if not message.1.active %}
+deleted
+{% endif %}
+" style="margin-left:{{ message.0 }}px;" id="msg-{{ message.1.pk }}">
 
             <h5>{{ message.1.owner.id }} at {{ message.1.created }} :</h5>
-            <h5>Spam (<span id="num_spam_{{ message.1.pk }}">{{ message.1.x_num_spam_marks }}</span>), Flag (<span id="num_flag_{{ message.1.pk }}">{{message.1.x_num_flag_marks }}</span>), Votes (<span id="num_vote_{{ message.1.pk }}">{{ message.1.x_num_vote_marks }}</span>)</h5>
 
             <p>
                 {{ message.1.message }}
@@ -31,26 +26,11 @@
 
             <p style="float:right;">
 
-                <button class="upvote_btn btn btn-primary action_mark_upvote_message
-                {% if message.1.x_is_marked_upvote %}
-                    active
-                {% endif %}
-                " data-id="{{ message.1.pk }}" data-toggle=button"><i class="icon-arrow-up icon-white"></i></button>
-                <button class="downvote_btn btn btn-primary action_mark_downvote_message
-                {% if message.1.x_is_marked_downvote %}
-                    active
-                {% endif %}
-                " data-id="{{ message.1.pk }}" data-toggle=button"><i class="icon-arrow-down icon-white"></i></button>
-                <button class="spam_btn btn btn-warning action_mark_spam_message
-                {% if message.1.x_is_marked_spam %}
-                    active
-                {% endif %}
-                " data-id="{{ message.1.pk }}" data-toggle="button"><i class="icon-fire icon-white"></i> Mark Spam</button>
                 <button class="spam_btn btn btn-danger action_mark_flag_message
-                {% if message.1.x_is_marked_flag %}
-                    active
-                {% endif %}
-                " data-id="{{ message.1.pk }}" data-toggle="button"><i class="icon-flag icon-white"></i> Mark Flag</button>
+{% if message.1.x_is_marked_flag %}
+active
+{% endif %}
+" data-id="{{ message.1.pk }}" data-toggle="button"><i class="icon-flag icon-white"></i> Mark Flag</button>
                 {% if message.1.active %}
                     <button class="delete_btn btn btn-inverse action_delete_message" data-id="{{ message.1.pk }}"><i class="icon-trash icon-white"></i> Delete</button>
                 {% endif %}

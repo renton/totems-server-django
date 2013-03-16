@@ -14,4 +14,4 @@ class WorldLayer(models.Model):
         super(WorldLayer, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return self.id
+        return str(self.id)
