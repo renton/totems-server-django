@@ -42,6 +42,7 @@ def register(request):
     else:
         raise Http404
 
+@csrf_exempt
 def add_totem(request):
 
     if request.method == "POST":
@@ -89,6 +90,7 @@ def add_totem(request):
     else:
         raise Http404
 
+@csrf_exempt
 def add_reply(request):
 
     if request.method == "POST":
