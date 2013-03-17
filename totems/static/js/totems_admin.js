@@ -1,5 +1,5 @@
-//var base_url = "http://127.0.0.1:8000/";
-var base_url = "http://enigmatic-reaches-2536.herokuapp.com/";
+var base_url = "http://127.0.0.1:8000/";
+//var base_url = "http://enigmatic-reaches-2536.herokuapp.com/";
 
 $(document).ready(function() {
 
@@ -15,13 +15,15 @@ $(document).ready(function() {
     $('body').on("click",'#apitester_fetch_totems',function() {
         testapi("api/fetch_totems/")
     });
-
-    /*
-    $(".action_render_reply_modal").live("click", function() {
-        $("#modalAddReply").modal('show');
-        $("#id_parent_message_id").val($(this).attr("data-id"));
+    $('body').on("click",'#apitester_fetch_messages',function() {
+        testapi("api/fetch_messages/")
     });
 
+    $('body').on("click",".action_render_reply_modal", function() {
+        $("#modal_add_reply").modal('show');
+        $("#id_parent_message_id").val($(this).attr("data-id"));
+    });
+    /*
     $(".action_delete_message").live("click", function() {
         message_id = $(this).attr("data-id");
         data = {"message_id":message_id};

@@ -49,11 +49,11 @@ def totems_list(request):
 
 def totems_detail(request,TotemID):
 
-    admin = Client.get_or_register_client("admin")
     #TODO proper form
     if request.method == "POST":
         if 'message' in request.POST and 'parent_message_id' in request.POST:
             if request.POST['message'] != "":
+                admin, created = Client.get_or_register_client("admin")
                 parent = TotemMessage.objects.get(pk=request.POST['parent_message_id'])
                 parent.reply_message(request.POST['message'],admin)
 
@@ -130,6 +130,20 @@ def apitest_add_reply(request):
         'message',
         'worldlayer_id',
     ]
+
+    return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
+
+def apitest_fetch_messages(request):
+    c={}
+
+    c['api_call_name'] = "fetch_messages"
+    c['required_params'] = [
+            'device_id',
+            'longitude',
+            'latitude',
+            'worldlayer_id',
+            'page',
+        ]
 
     return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
 

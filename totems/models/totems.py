@@ -28,7 +28,7 @@ class Totem(models.Model):
         super(Totem, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return self.id
+        return str(self.id)
 
     def get_message_count(self):
         return TotemMessage.objects.filter(totem=self).count()

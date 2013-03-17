@@ -5,4 +5,5 @@ urlpatterns = patterns('',
     url(r'^add_totem/$', 'totems.api.views.add_totem', name='add_totem'),
     url(r'^add_reply/$', 'totems.api.views.add_reply', name='add_reply'),
     url(r'^fetch_totems/$', 'totems.api.views.fetch_totems', name='fetch_totems'),
+    url(r'^fetch_messages/$', 'totems.api.views.fetch_messages', name='fetch_messages'),
 )
