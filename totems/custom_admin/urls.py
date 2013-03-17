@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^totems/(?P<TotemID>.+)/$', 'totems.custom_admin.views.totems_detail', name='totems_detail'),
     url(r'^apitest/register/$', 'totems.custom_admin.views.apitest_register', name='apitest_register'),
     url(r'^apitest/add_totem/$', 'totems.custom_admin.views.apitest_add_totem', name='apitest_add_totem'),
+    url(r'^apitest/fetch_totems/$', 'totems.custom_admin.views.apitest_fetch_totems', name='apitest_fetch_totems'),
     url(r'^apitest/add_reply/$', 'totems.custom_admin.views.apitest_add_reply', name='apitest_add_reply'),
     url(r'^messages/$', 'totems.custom_admin.views.messages_list', name='messages_list'),
 

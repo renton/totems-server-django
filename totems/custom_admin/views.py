@@ -107,6 +107,19 @@ def apitest_add_totem(request):
 
     return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
 
+def apitest_fetch_totems(request):
+    c={}
+
+    c['api_call_name'] = "fetch_totems"
+    c['required_params'] = [
+        'device_id',
+        'longitude',
+        'latitude',
+        'worldlayer_id',
+    ]
+
+    return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
+
 def apitest_add_reply(request):
     c={}
 

@@ -11,6 +11,9 @@ $(document).ready(function() {
     $('body').on("click",'#apitester_add_reply',function() {
         testapi("api/add_reply/")
     });
+    $('body').on("click",'#apitester_fetch_totems',function() {
+        testapi("api/fetch_totems/")
+    });
 
     /*
     $(".action_render_reply_modal").live("click", function() {
