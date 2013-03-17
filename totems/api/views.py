@@ -1,7 +1,9 @@
 from django.http import HttpResponse, Http404
 from django.utils import simplejson
 from totems.models import Client, Totem, TotemMessage, WorldLayer
+from django.views.decorators.csrf import csrf_exempt                                          
 
+@csrf_exempt
 def register(request):    
 
     if request.method == "POST":
