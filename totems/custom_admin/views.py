@@ -120,6 +120,13 @@ def apitest_add_reply(request):
 
     return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
 
+def messages_list(request):
+    messages = TotemMessage.objects.all().order_by('-created')
+    c = {
+        'messages':messages
+    }
+    return render_to_response("custom_admin/messages/list.html",c,context_instance=RequestContext(request))
+
 '''
 
 def clients_detailed(request,ClientID):
@@ -166,12 +173,7 @@ def logs_list(request):
     
 
 
-def messages_list(request):
-    messages = TotemMessage.objects.all().order_by('-created')
-    c = {
-        'messages':messages
-    }
-    return render_to_response("messages/list.html",c,context_instance=RequestContext(request))
+
 
 def marks_list(request):
     marks = Mark.objects.all().order_by('-created')

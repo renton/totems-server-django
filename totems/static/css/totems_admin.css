@@ -1,4 +1,6 @@
 .message {
     background:#dcdcdc;
     padding:10px;
+    border:1px solid #ccc;
+    margin:5px;
 }

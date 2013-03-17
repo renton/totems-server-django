@@ -11,11 +11,12 @@ urlpatterns = patterns('',
     url(r'^apitest/register/$', 'totems.custom_admin.views.apitest_register', name='apitest_register'),
     url(r'^apitest/add_totem/$', 'totems.custom_admin.views.apitest_add_totem', name='apitest_add_totem'),
     url(r'^apitest/add_reply/$', 'totems.custom_admin.views.apitest_add_reply', name='apitest_add_reply'),
+    url(r'^messages/$', 'totems.custom_admin.views.messages_list', name='messages_list'),
 
     #url(r'^clients/detailed/(?P<ClientID>.+)/$', 'totems.custom_admin.views.clients_detailed', name='clientsDetailed'),
     #url(r'^clients/activity_map/$', 'totems.custom_admin.views.clients_activity_map', name='clientsActivityMapEmpty'),
     #url(r'^clients/activity_map/(?P<ClientID>.+)/$', 'totems.custom_admin.views.clients_activity_map', name='clientsActivityMap'),
-    #url(r'^messages/$', 'totems.custom_admin.views.messages_list', name='messagesList'),
+
     #url(r'^messages/delete/(?P<MessageID>.+)/$', 'totems.custom_admin.views.ajax_delete_message'),
     #url(r'^messages/mark/spam/(?P<MessageID>.+)/$', 'totems.custom_admin.views.ajax_mark_message_as_spam'),
     #url(r'^messages/mark/flag/(?P<MessageID>.+)/$', 'totems.custom_admin.views.ajax_mark_message_as_flagged'),
