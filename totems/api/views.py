@@ -181,6 +181,7 @@ def fetch_totems(request):
 
         for totem in totems:
             distance = lat_long_distance((latitude,longitude),(totem.latitude,totem.longitude))
+            caller_owns = (totem.owner.device_id == request.POST['device_id'])
 
             parent_message = totem.get_parent_message()
             output['totems'].append({
@@ -190,6 +191,7 @@ def fetch_totems(request):
                 'last_activity':str(totem.last_activity),
                 'created':str(totem.created),
                 'distance':distance,
+                'is_owner':caller_owns,
             })
 
         output['total'] = len(output['totems'])
