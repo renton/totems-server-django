@@ -12,25 +12,23 @@
                     <th>platform</th>
                     <th>banned</th>
                     <th>active</th>
-                    <th>bot</th>
                     <th>msgs</th>
                     <th>totems</th>
-                    <th>latest</th>
-                    <th>created</th>
+                    <th><a href="{% url "clients_list_sorted" "last_activity" %}">latest</a></th>
+                    <th><a href="{% url "clients_list_sorted" "created" %}">created</a></th>
                 </tr>
 
                 {% for client in clients %} 
-                    <tr {% if client.is_banned %}style="background:#ccffff"{% endif %}>
-                        <td>{{ client.pk }}</td>
+                    <tr {% if client.is_banned %}class="disabled"{% endif %}>
+                        <td><a href="{% url "clients_detail" client.pk %}">{{ client.pk }}</a></td>
                         <td>{{ client.device_id|truncatechars:8 }}</td>
                         <td>{{ client.device_platform|truncatechars:10 }}</td>
                         <td>{{ client.is_banned }}</td>
                         <td>{{ client.active }}</td>
-                        <td>{{ client.is_bot }}</td>
                         <td>{{ client.x_num_messages }}</td>
                         <td>{{ client.x_num_totems }}</td>
-                        <td>{{ client.last_activity }}</td>
-                        <td>{{ client.created }}</td>
+                        <td style="font-size:10px;">{{ client.last_activity }}</td>
+                        <td style="font-size:10px;">{{ client.created }}</td>
                     </tr>
                 {% endfor %}
 

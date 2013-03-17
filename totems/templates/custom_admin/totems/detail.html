@@ -6,7 +6,7 @@
 
     <div class="span12">
 
-    <legend><h2>{{ totem.pk }} ( {{ totem.get_message_count }} )</h2></legend>
+    <legend><h4>{{ totem.pk }} ( {{ totem.get_message_count }} )</h4></legend>
 
     {% for message in messages %}
 
@@ -16,7 +16,7 @@ deleted
 {% endif %}
 " style="margin-left:{{ message.0 }}px;" id="msg-{{ message.1.pk }}">
 
-            <h5>{{ message.1.owner.id }} at {{ message.1.created }} :</h5>
+            <h5>{{ message.1.owner.device_id }} at {{ message.1.created }} :</h5>
 
             <p>
                 {{ message.1.message }}

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from totems.models import Client, WorldLayer, Totem, TotemMessage
+from totems.models import Client, WorldLayer, Totem, TotemMessage, RequestLog
 
 admin.site.register(Client)
 admin.site.register(WorldLayer)
@@ -10,7 +10,7 @@ admin.site.register(TotemMessage)
 #admin.site.register(Mark)
 #admin.site.register(MarkSpam)
 #admin.site.register(MarkVote)
-#admin.site.register(RequestLog)
+admin.site.register(RequestLog)
 #admin.site.register(FlagNotification)
 #admin.site.register(ReplyNotification)
 #admin.site.register(EmptyRequestNotification)

@@ -9,32 +9,28 @@
             <thead>
                 <tr>
                     <th>
-                        Totem
+                        totem
                     </th>
                     <th>
-                        Owner
+                        owner
                     </th>
                     <th>
-                        Created
+                        created
                     </th>
                     <th>
-                        Last_Activity
+                        last_activity
                     </th>
                     <th>
-                        Parent_Message
+                        parent_message
                     </th>
                     <th>
-                        #_Messages
+                        #_messages
                     </th>
-                    <th>
-                        Active
-                    </th>
-
                 </tr>
             </thead>
             <tbody>
             {% for totem in totems %}
-                <tr>
+                <tr{% if not totem.active %} class="disabled"{% endif %}>
                     <td>
                         <a href="{% url "totems_detail" totem.pk %}">
                             {{ totem.pk }}
@@ -42,7 +38,7 @@
                     </td>
 
                     <td>
-                        {{ totem.owner.pk }}
+                        {{ totem.owner.device_id }}
                     </td>
                     <td>
                         {{ totem.created }}
@@ -56,10 +52,6 @@
                     <td>
                         {{ totem.get_message_count }}
                     </td>
-                    <td>
-                       {{ totem.active }}
-                    </td>
-
                 </tr>
             {% endfor %}
             </tbody>
@@ -67,48 +59,4 @@
     </div>
 </div>
 
-<div class="modal hide fade" id="modalAddTotem">
-
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">×</a>
-        <h3>Add Totem</h3>
-    </div>
-
-    <form class="form-horizontal" method="post" action=".">
-    {% csrf_token %}
-        <div class="modal-body">
-
-                <fieldset>
-                    <div class="control-group">
-
-                        <label class="control-label">World Layer</label>
-
-                        <div class="controls">
-                            <select name="layer" id="id_layer">
-                                {% for layer in layers %}
-                                <option>
-                                    {{ layer.name }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="control-group">
-
-                        <label class="control-label">Message</label>
-
-                        <div class="controls">
-                            <textarea name="message" id="id_message" class="input-xlarge" rows="3"></textarea>
-                        </div>
-                    </div>
-                </fieldset>
-        </div>
-
-        <div class="modal-footer">
-            <a class="btn" data-dismiss="modal">Close</a>
-            <button class="btn btn-primary" type="submit">Add Totem</button>
-        </div>
-    </form>
-</div>
 {% endblock content %}

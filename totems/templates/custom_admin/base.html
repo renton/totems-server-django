@@ -40,7 +40,7 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li><a href="{% url "clients_list" %}">List</a></li>
-                  <li><a href="{% url "clients_registration_map" %}">Map</a></li>
+                  <li><a href="{% url "clients_registration_map" %}">Registration Map</a></li>
                 </ul>
             </ul>
             <ul class="nav">
@@ -51,6 +51,15 @@
                 <ul class="dropdown-menu">
                   <li><a href="{% url "totems_list" %}">List</a></li>
                   <li><a href="{% url "totems_map" %}">Map</a></li>
+                </ul>
+            </ul>
+            <ul class="nav">
+                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                    Messages
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="{% url "messages_list" %}">List</a></li>
                 </ul>
             </ul>
 

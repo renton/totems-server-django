@@ -4,6 +4,9 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'totems.custom_admin.views.home', name='home'),
     url(r'^clients/$', 'totems.custom_admin.views.clients_list', name='clients_list'),
+    url(r'^clients/sort/(?P<sort_param>.+)/$', 'totems.custom_admin.views.clients_list', name='clients_list_sorted'),
+    url(r'^clients/detailed/(?P<ClientID>.+)/$', 'totems.custom_admin.views.clients_detail', name='clients_detail'),
+    url(r'^clients/activity_map/(?P<ClientID>.+)/$', 'totems.custom_admin.views.clients_activity_map', name='clients_activity_map'),
     url(r'^clients/registration_map/$', 'totems.custom_admin.views.clients_registration_map', name='clients_registration_map'),
     url(r'^totems/$', 'totems.custom_admin.views.totems_list', name='totems_list'),
     url(r'^totems/map/$', 'totems.custom_admin.views.totems_map', name='totems_map'),
@@ -14,12 +17,13 @@ urlpatterns = patterns('',
     url(r'^apitest/fetch_messages/$', 'totems.custom_admin.views.apitest_fetch_messages', name='apitest_fetch_messages'),
     url(r'^apitest/add_reply/$', 'totems.custom_admin.views.apitest_add_reply', name='apitest_add_reply'),
     url(r'^messages/$', 'totems.custom_admin.views.messages_list', name='messages_list'),
+    url(r'^messages/delete/(?P<MessageID>.+)/$', 'totems.custom_admin.views.ajax_delete_message'),
 
-    #url(r'^clients/detailed/(?P<ClientID>.+)/$', 'totems.custom_admin.views.clients_detailed', name='clientsDetailed'),
+
     #url(r'^clients/activity_map/$', 'totems.custom_admin.views.clients_activity_map', name='clientsActivityMapEmpty'),
     #url(r'^clients/activity_map/(?P<ClientID>.+)/$', 'totems.custom_admin.views.clients_activity_map', name='clientsActivityMap'),
 
-    #url(r'^messages/delete/(?P<MessageID>.+)/$', 'totems.custom_admin.views.ajax_delete_message'),
+
     #url(r'^messages/mark/spam/(?P<MessageID>.+)/$', 'totems.custom_admin.views.ajax_mark_message_as_spam'),
     #url(r'^messages/mark/flag/(?P<MessageID>.+)/$', 'totems.custom_admin.views.ajax_mark_message_as_flagged'),
     #url(r'^messages/mark/downvote/(?P<MessageID>.+)/$', 'totems.custom_admin.views.ajax_mark_downvote'),

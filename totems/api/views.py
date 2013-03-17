@@ -1,6 +1,6 @@
 from django.http import HttpResponse, Http404
 from django.utils import simplejson
-from totems.models import Client, Totem, TotemMessage, WorldLayer
+from totems.models import Client, Totem, TotemMessage, WorldLayer, RequestLog
 from django.views.decorators.csrf import csrf_exempt                                          
 from totems.tools import lat_long_distance, pretty_date
 import time
@@ -208,6 +208,9 @@ def fetch_totems(request):
         
         output['success'] = True
 
+        RequestLog.add_request_log(client,longitude,latitude)
+        client.save()
+
         return HttpResponse(simplejson.dumps(output), 'application/json')
     else:
         raise Http404
@@ -278,11 +281,15 @@ def fetch_messages(request):
                 'is_owner':caller_owns,
                 'is_parent_totem_message':is_parent_totem_message,
                 'num_replies':message.get_num_replies(),
+                'active':message.active,
             })
 
         output['total'] = len(output['messages'])
         
         output['success'] = True
+
+        RequestLog.add_request_log(client,longitude,latitude)
+        client.save()
 
         return HttpResponse(simplejson.dumps(output), 'application/json')
     else:

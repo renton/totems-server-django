@@ -9,41 +9,35 @@
             <thead>
                 <tr>
                     <th>
-                        Message_ID
+                        id
                     </th>
                     <th>
-                        Owner
+                        owner
                     </th>
                     <th>
-                        Totem
+                        totem
                     </th>
                     <th>
-                        Created
+                        created
                     </th>
                     <th>
-                        Message
-                    </th>
-                    <th>
-                        Rating
-                    </th>
-                    <th>
-                        Active
+                        message
                     </th>
 
                 </tr>
             </thead>
             <tbody>
             {% for message in messages %}
-                <tr>
+                <tr {% if not message.active %}class="disabled"{% endif %}>
                     <td>
                         {{ message.pk }}
                     </td>
 
                     <td>
-                        {{ message.owner.pk }}
+                        {{ message.owner.device_id }}
                     </td>
                     <td>
-                        <a href="{% url totemsDetail message.totem.pk %}">
+                        <a href="{% url "totems_detail" message.totem.pk %}">
                             {{ message.totem.pk }}
                         </a>
                     </td>
@@ -52,12 +46,6 @@
                     </td>
                     <td>
                         {{ message.message }}
-                    </td>
-                    <td>
-                        {{ message.rating }}
-                    </td>
-                    <td>
-                       {{ message.active }}
                     </td>
 
                 </tr>

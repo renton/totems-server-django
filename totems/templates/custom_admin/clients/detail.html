@@ -1,0 +1,174 @@
+{% extends "custom_admin/base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="span12">
+
+        <h3>{{ client.device_id }} ({{ client.pk }})</h3><a href="{% url "clients_activity_map" client.pk %}">Activity Map</a>
+        <br />
+        <h3> Stats </h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        client
+                    </th>
+                    <th>
+                        device
+                    </th>
+                    <th>
+                        created
+                    </th>
+                    <th>
+                        last_activity
+                    </th>
+                    <th>
+                        #_totems
+                    </th>
+                    <th>
+                        #_messages
+                    </th>
+                    <th>
+                        #_requests
+                    </th>
+                    <th>
+                        active
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        {{ client.pk }}
+                    </td>
+                    <td>
+                        {{ client.device_id }}
+                    </td>
+                    <td>
+                        {{ client.created }}
+                    </td>
+                    <td>
+                        {{ client.last_activity }}
+                    </td>
+                    <td>
+                        {{ client.x_num_totems }}
+                    </td>
+                    <td>
+                        {{ client.x_num_messages }}
+                    </td>
+                    <td>
+                        {{ client.x_num_requests }}
+                    </td>
+                    <td>
+                        {{ client.active }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+        <h3>Totems</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        totem
+                    </th>
+                    <th>
+                        owner
+                    </th>
+                    <th style="width:130px;">
+                        created
+                    </th>
+                    <th style="width:130px;">
+                        last_activity
+                    </th>
+                    <th>
+                        parent
+                    </th>
+                    <th>
+                        #_messages
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+            {% for totem in totems %}
+                <tr {% if not totem.active %}class="disabled"{% endif %}>
+                    <td>
+                        <a href="{% url "totems_detail" totem.pk %}">
+                            {{ totem.pk }}
+                        </a>
+                    </td>
+
+                    <td>
+                        {{ totem.owner.device_id }}
+                    </td>
+                    <td style="font-size:10px;">
+                        {{ totem.created }}
+                    </td>
+                    <td style="font-size:10px;">
+                        {{ totem.last_activity }}
+                    </td>
+                    <td>
+                        {{ totem.get_parent_message.message }}
+                    </td>
+                    <td>
+                        {{ totem.get_message_count }}
+                    </td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <br />
+        <h3>Messages</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        id
+                    </th>
+                    <th>
+                        owner
+                    </th>
+                    <th>
+                        totem
+                    </th>
+                    <th style="width:130px;">
+                        created
+                    </th>
+                    <th>
+                        message
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+            {% for message in messages %}
+                <tr {% if not message.active %}class="disabled"{% endif %}>
+                    <td>
+                        {{ message.pk }}
+                    </td>
+
+                    <td>
+                        {{ message.owner.device_id }}
+                    </td>
+                    <td>
+                        <a href="{% url "totems_detail" message.totem.pk %}">
+                            {{ message.totem.pk }}
+                        </a>
+                    </td>
+                    <td style="font-size:10px;">
+                        {{ message.created }}
+                    </td>
+                    <td>
+                        {{ message.message }}
+                    </td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

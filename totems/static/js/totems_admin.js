@@ -23,17 +23,17 @@ $(document).ready(function() {
         $("#modal_add_reply").modal('show');
         $("#id_parent_message_id").val($(this).attr("data-id"));
     });
-    /*
-    $(".action_delete_message").live("click", function() {
+    $('body').on("click",".action_delete_message", function() {
         message_id = $(this).attr("data-id");
         data = {"message_id":message_id};
-        ajax("messages/delete/"+message_id+"/",data,function (response) {
+        ajax("panel/messages/delete/"+message_id+"/",data,function (response) {
 
             $("#msg-"+message_id+" .delete_btn").hide();
             $("#msg-"+message_id).addClass("deleted");
         });
     });
 
+    /*
     $(".action_mark_spam_message").live("click", function() {
         message_id = $(this).attr("data-id");
         data = {"message_id":message_id};

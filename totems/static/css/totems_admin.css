@@ -4,3 +4,12 @@
     border:1px solid #ccc;
     margin:5px;
 }
+
+.message.deleted {
+    background: #eed3d7;
+    border:1px solid #b94a48;
+}
+
+tr.disabled {
+    background: #eed3d7;
+}

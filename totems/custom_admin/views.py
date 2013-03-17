@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django.http import HttpResponse
 from django.utils import simplejson
 import os
-from totems.models import Client, Totem, TotemMessage, WorldLayer
+from totems.models import Client, Totem, TotemMessage, WorldLayer, RequestLog
 from random import randrange
 
 ROWS_PER_PAGE = 100
@@ -12,10 +12,16 @@ def home(request):
     c = {}
     return render_to_response("custom_admin/base.html",c,context_instance=RequestContext(request))
 
+# --- CLIENTS ---
 
 def clients_list(request,sort_param=None):
+    
+    if sort_param:
+        sort_param = sort_param
+    else:
+        sort_param = "last_activity"
 
-    clients = Client.objects.all().order_by('-last_activity')
+    clients = Client.objects.all().order_by('-'+str(sort_param))
 
     c = {
         'clients':clients
@@ -31,12 +37,50 @@ def clients_registration_map(request):
     clients = Client.objects.all()
     points = []
     for client in clients:
-        points.append((client.registration_longitude,client.registration_latitude))
+        points.append({"coors":(client.registration_longitude,client.registration_latitude),"label":"R","color":"ff776b"})
 
     c = {
         'points':points
     }
     return render_to_response("custom_admin/clients/registration_map.html",c,context_instance=RequestContext(request))
+
+def clients_detail(request,ClientID):
+    client = Client.objects.get(pk=ClientID)
+    totems = Totem.objects.filter(owner=client)
+    messages = TotemMessage.objects.filter(owner=client)
+    client.x_num_messages = messages.count()
+    client.x_num_totems = totems.count()
+    requests = RequestLog.objects.filter(client=client)
+    client.x_num_requests = len(requests)
+    c = {
+        'client':client,
+        'totems':totems,
+        'messages':messages
+    }
+    return render_to_response("custom_admin/clients/detail.html",c,context_instance=RequestContext(request))
+
+def clients_activity_map(request,ClientID=None):
+    if ClientID is not None:
+        client = Client.objects.get(pk=ClientID)
+        messages = TotemMessage.objects.filter(owner=client)
+        request_logs = RequestLog.objects.filter(client=client)
+    else:
+        totems = []
+        message = []
+        request_logs = []
+
+    points = []
+    for message in messages:
+       points.append({"coors":(message.totem.longitude,message.totem.latitude),"label":"M","color":"ff776b"})
+    for log in request_logs:
+       points.append({"coors":(message.totem.longitude,message.totem.latitude),"label":"R","color":"6b77ff"})
+
+    c = {
+        'points':points
+    }
+    return render_to_response("custom_admin/clients/activity_map.html",c,context_instance=RequestContext(request))
+
+# --- TOTEMS ---
 
 def totems_list(request):
 
@@ -72,11 +116,27 @@ def totems_map(request):
     totems = Totem.objects.all()
     points = []
     for totem in totems:
-        points.append((totem.longitude,totem.latitude))
+        points.append({"coors":(totem.longitude,totem.latitude),"label":"T","color":"ff776b"})
     c = {
         'points':points
     }
     return render_to_response("custom_admin/totems/map.html",c,context_instance=RequestContext(request))
+
+# --- MESSAGES ---
+
+def messages_list(request):
+    messages = TotemMessage.objects.all().order_by('-created')
+    c = {
+        'messages':messages
+    }
+    return render_to_response("custom_admin/messages/list.html",c,context_instance=RequestContext(request))
+
+def ajax_delete_message(request,MessageID):
+    msg_to_delete = TotemMessage.objects.get(pk=MessageID)
+    msg_to_delete.remove()
+    return HttpResponse(simplejson.dumps({'success':True,'message':MessageID}))
+
+# --- API TEST ---
 
 def apitest_register(request):
     c={}
@@ -147,27 +207,11 @@ def apitest_fetch_messages(request):
 
     return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
 
-def messages_list(request):
-    messages = TotemMessage.objects.all().order_by('-created')
-    c = {
-        'messages':messages
-    }
-    return render_to_response("custom_admin/messages/list.html",c,context_instance=RequestContext(request))
+
 
 '''
 
-def clients_detailed(request,ClientID):
-    client = Client.objects.get(pk=ClientID)
-    totems = Totem.objects.filter(owner=client)
-    messages = TotemMessage.objects.filter(owner=client)
-    client.x_num_messages = messages.count()
-    client.x_num_totems = totems.count()
-    c = {
-        'client':client,
-        'totems':totems,
-        'messages':messages
-    }
-    return render_to_response("clients/detailed.html",c,context_instance=RequestContext(request))
+
 
 def clients_activity_map(request,ClientID=None):
     if ClientID is not None:
@@ -228,10 +272,7 @@ def simulate_traffic(request):
     c={}
     return render_to_response("clients/list.html",c,context_instance=RequestContext(request))
 
-def ajax_delete_message(request,MessageID):
-    msg_to_delete = TotemMessage.objects.get(pk=MessageID)
-    msg_to_delete.remove()
-    return HttpResponse(simplejson.dumps({'success':True,'message':MessageID}))
+
 
 def ajax_mark_message_as_spam(request,MessageID):
     msg_to_mark = TotemMessage.objects.get(pk=MessageID)
