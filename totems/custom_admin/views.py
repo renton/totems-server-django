@@ -77,20 +77,20 @@ def clients_activity_map(request,ClientID=None):
         request_logs = []
 
     points = []
-    for message in messages:
-       points.append({
-            "coors":(message.totem.longitude,message.totem.latitude),
-            "label":"M",
-            "color":"ff776b",
-            "message":message.totem.get_parent_message().message,
-            "totem_id":message.totem.id,
-        })
     for log in request_logs:
        points.append({
             "coors":(log.longitude,log.latitude),
             "label":"R",
             "color":"6b77ff",
             "message":"",
+        })
+    for message in messages:
+       points.append({
+            "coors":(message.totem.longitude,message.totem.latitude),
+            "label":"M",
+            "color":"ff776b",
+            "message":str(message.totem.get_parent_message().message)+" ("+str(message.totem.get_message_count())+")",
+            "totem_id":message.totem.id,
         })
 
     c = {
@@ -140,7 +140,7 @@ def totems_map(request):
             "coors":(totem.longitude,totem.latitude),
             "label":"T",
             "color":"ff776b",
-            "message":totem.get_parent_message().message,
+            "message":str(totem.get_parent_message().message)+" ("+str(message.totem.get_message_count())+")",
             "totem_id":totem.id,
         })
     c = {
@@ -155,7 +155,7 @@ def totems_map_single(request,TotemID):
         "coors":(totem.longitude,totem.latitude),
         "label":"T",
         "color":"ff776b",
-        "message":totem.get_parent_message().message,
+        "message":str(totem.get_parent_message().message)+" ("+str(message.totem.get_message_count())+")",
         "totem_id":totem.id,
     })
     c = {
