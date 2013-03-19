@@ -122,6 +122,16 @@ def totems_map(request):
     }
     return render_to_response("custom_admin/totems/map.html",c,context_instance=RequestContext(request))
 
+def totems_map_single(request,TotemID):
+    totem = Totem.objects.get(id=TotemID)
+    points = []
+    points.append({"coors":(totem.longitude,totem.latitude),"label":"T","color":"ff776b"})
+    c = {
+        'points':points
+    }
+    return render_to_response("custom_admin/totems/map_single.html",c,context_instance=RequestContext(request))
+    
+
 # --- MESSAGES ---
 
 def messages_list(request):

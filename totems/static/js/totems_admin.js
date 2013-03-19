@@ -1,5 +1,5 @@
-var base_url = "http://127.0.0.1:8000/";
-//var base_url = "http://enigmatic-reaches-2536.herokuapp.com/";
+//var base_url = "http://127.0.0.1:8000/";
+var base_url = "http://enigmatic-reaches-2536.herokuapp.com/";
 
 $(document).ready(function() {
 

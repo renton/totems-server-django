@@ -32,6 +32,9 @@
             {% for totem in totems %}
                 <tr{% if not totem.active %} class="disabled"{% endif %}>
                     <td>
+                        <a href="{% url "totems_map_single" totem.pk %}">
+                            <i class="icon-map-marker"></i>
+                        </a>
                         <a href="{% url "totems_detail" totem.pk %}">
                             {{ totem.pk }}
                         </a>
