@@ -10,6 +10,10 @@ TOTEMS_MAX_FETCH_RANGE_LONGITUDE = 0.0025
 
 MAX_MESSAGES_PER_PAGE = 10
 
+# ===========================================
+# ----- REGISTER -----
+# ===========================================
+
 @csrf_exempt
 def register(request):    
 
@@ -48,6 +52,10 @@ def register(request):
         return HttpResponse(simplejson.dumps(output), 'application/json')
     else:
         raise Http404
+
+# ===========================================
+# ----- ADD_TOTEM -----
+# ===========================================
 
 @csrf_exempt
 def add_totem(request):
@@ -97,6 +105,10 @@ def add_totem(request):
     else:
         raise Http404
 
+# ===========================================
+# ----- ADD_REPLY -----
+# ===========================================
+
 @csrf_exempt
 def add_reply(request):
 
@@ -136,6 +148,10 @@ def add_reply(request):
         return HttpResponse(simplejson.dumps(output), 'application/json')
     else:
         raise Http404
+
+# ===========================================
+# ----- FETCH_TOTEMS -----
+# ===========================================
 
 @csrf_exempt
 def fetch_totems(request):
@@ -189,10 +205,16 @@ def fetch_totems(request):
             timestamp_created = time.mktime(totem.created.timetuple())
             timestamp_last_activity = time.mktime(totem.last_activity.timetuple())
 
+            # don't pass content of inactive messages
+            if parent_message.active == True:
+                message_text = parent_message.message
+            else:
+                message_text = ""
+
             parent_message = totem.get_parent_message()
             output['totems'].append({
                 'id':totem.id,
-                'message':parent_message.message,
+                'message':message_text,
                 'message_count':totem.get_message_count(),
                 'last_activity':str(totem.last_activity),
                 'created':str(totem.created),
@@ -214,6 +236,53 @@ def fetch_totems(request):
         return HttpResponse(simplejson.dumps(output), 'application/json')
     else:
         raise Http404
+
+# ===========================================
+# ----- FETCH_TOTEM_THREAD -----
+# ===========================================
+
+@csrf_exempt
+def fetch_totem_thread(request):
+
+    if request.method == "POST":
+
+        required_params = [
+            'device_id',
+            'totem_id',
+            'depth',
+        ]
+
+        for param in required_params:
+            if param not in request.POST.keys():
+                raise Http404
+
+        # client must exist in system and be registered
+        try:
+            client = Client.objects.get(device_id=request.POST['device_id'])
+        except:
+            raise Http404
+
+        # totem must exist in system
+        try:
+            totem = Totem.objects.get(id=request.POST['totem_id'])
+        except:
+            raise Http404
+
+        messages = totem.build_totem_message_tree(request.POST['device_id'],int(request.POST['depth']))
+
+        output = {}
+        output['messages'] = messages
+
+        output['success'] = True
+        print output
+
+        return HttpResponse(simplejson.dumps(output), 'application/json')
+    else:
+        raise Http404
+
+# ===========================================
+# ----- FETCH_MESSAGES -----
+# ===========================================
 
 @csrf_exempt
 def fetch_messages(request):
@@ -271,9 +340,14 @@ def fetch_messages(request):
             is_parent_totem_message = (message.parent_message == None) 
             timestamp = time.mktime(message.created.timetuple())
 
+            if message.active == True:
+                message_text = message.message
+            else:
+                message_text = ""
+
             output['messages'].append({
                 'id':message.id,
-                'message':message.message,
+                'message':message_text,
                 'message_count':message.totem.get_message_count(),
                 'created':str(message.created),
                 'created_pretty':pretty_date(int(timestamp)),

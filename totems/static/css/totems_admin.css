@@ -13,3 +13,7 @@
 tr.disabled {
     background: #eed3d7;
 }
+
+#map img {
+    max-width: none;
+}

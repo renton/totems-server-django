@@ -12,7 +12,9 @@ def home(request):
     c = {}
     return render_to_response("custom_admin/base.html",c,context_instance=RequestContext(request))
 
+# ========================================
 # --- CLIENTS ---
+# ========================================
 
 def clients_list(request,sort_param=None):
     
@@ -37,7 +39,12 @@ def clients_registration_map(request):
     clients = Client.objects.all()
     points = []
     for client in clients:
-        points.append({"coors":(client.registration_longitude,client.registration_latitude),"label":"R","color":"ff776b"})
+        points.append({
+            "coors":(client.registration_longitude,client.registration_latitude),
+            "label":"R",
+            "color":"ff776b",
+            "message":"",
+        })
 
     c = {
         'points':points
@@ -71,16 +78,29 @@ def clients_activity_map(request,ClientID=None):
 
     points = []
     for message in messages:
-       points.append({"coors":(message.totem.longitude,message.totem.latitude),"label":"M","color":"ff776b"})
+       points.append({
+            "coors":(message.totem.longitude,message.totem.latitude),
+            "label":"M",
+            "color":"ff776b",
+            "message":message.totem.get_parent_message().message,
+            "totem_id":message.totem.id,
+        })
     for log in request_logs:
-       points.append({"coors":(message.totem.longitude,message.totem.latitude),"label":"R","color":"6b77ff"})
+       points.append({
+            "coors":(log.longitude,log.latitude),
+            "label":"R",
+            "color":"6b77ff",
+            "message":str(log.longitude)+" "+str(log.latitude),
+        })
 
     c = {
         'points':points
     }
     return render_to_response("custom_admin/clients/activity_map.html",c,context_instance=RequestContext(request))
 
+# ========================================
 # --- TOTEMS ---
+# ========================================
 
 def totems_list(request):
 
@@ -116,7 +136,13 @@ def totems_map(request):
     totems = Totem.objects.all()
     points = []
     for totem in totems:
-        points.append({"coors":(totem.longitude,totem.latitude),"label":"T","color":"ff776b"})
+        points.append({
+            "coors":(totem.longitude,totem.latitude),
+            "label":"T",
+            "color":"ff776b",
+            "message":totem.get_parent_message().message,
+            "totem_id":totem.id,
+        })
     c = {
         'points':points
     }
@@ -125,14 +151,22 @@ def totems_map(request):
 def totems_map_single(request,TotemID):
     totem = Totem.objects.get(id=TotemID)
     points = []
-    points.append({"coors":(totem.longitude,totem.latitude),"label":"T","color":"ff776b"})
+    points.append({
+        "coors":(totem.longitude,totem.latitude),
+        "label":"T",
+        "color":"ff776b",
+        "message":totem.get_parent_message().message,
+        "totem_id":totem.id,
+    })
     c = {
         'points':points
     }
     return render_to_response("custom_admin/totems/map_single.html",c,context_instance=RequestContext(request))
     
 
+# ========================================
 # --- MESSAGES ---
+# ========================================
 
 def messages_list(request):
     messages = TotemMessage.objects.all().order_by('-created')
@@ -146,7 +180,9 @@ def ajax_delete_message(request,MessageID):
     msg_to_delete.remove()
     return HttpResponse(simplejson.dumps({'success':True,'message':MessageID}))
 
+# ========================================
 # --- API TEST ---
+# ========================================
 
 def apitest_register(request):
     c={}
@@ -203,6 +239,18 @@ def apitest_add_reply(request):
 
     return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
 
+def apitest_fetch_totem_thread(request):
+    c={}
+
+    c['api_call_name'] = "fetch_totem_thread"
+    c['required_params'] = [
+        'device_id',
+        'totem_id',
+        'depth',
+    ]
+
+    return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
+
 def apitest_fetch_messages(request):
     c={}
 
@@ -217,27 +265,6 @@ def apitest_fetch_messages(request):
 
     return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
 
-
-
-'''
-
-
-
-def clients_activity_map(request,ClientID=None):
-    if ClientID is not None:
-        client = Client.objects.get(pk=ClientID)
-        totems = Totem.objects.filter(owner=client)
-    else:
-        totems = []
-    points = []
-    for totem in totems:
-        points.append(totem.point)
-    c = {
-        'points':points
-    }
-    return render_to_response("clients/activity_map.html",c,context_instance=RequestContext(request))
-
-'''
 
 
 '''

@@ -1,4 +1,5 @@
 {% extends "custom_admin/base.html" %}
+{% load url from future %}
 
 {% block content %}
 
@@ -6,7 +7,7 @@
 
     <div class="span12">
 
-    <legend><h4>{{ totem.pk }} ( {{ totem.get_message_count }} )</h4></legend>
+    <legend><h4>{{ totem.pk }} ( {{ totem.get_message_count }} ) <a href="{% url "totems_map_single" totem.pk %}"><i class="icon-map-marker"></i></a></h4></legend>
 
     {% for message in messages %}
 

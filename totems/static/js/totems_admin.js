@@ -1,5 +1,5 @@
-//var base_url = "http://127.0.0.1:8000/";
-var base_url = "http://enigmatic-reaches-2536.herokuapp.com/";
+var base_url = "http://127.0.0.1:8000/";
+//var base_url = "http://enigmatic-reaches-2536.herokuapp.com/";
 
 $(document).ready(function() {
 
@@ -17,6 +17,9 @@ $(document).ready(function() {
     });
     $('body').on("click",'#apitester_fetch_messages',function() {
         testapi("api/fetch_messages/")
+    });
+    $('body').on("click",'#apitester_fetch_totem_thread',function() {
+        testapi("api/fetch_totem_thread/")
     });
 
     $('body').on("click",".action_render_reply_modal", function() {

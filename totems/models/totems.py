@@ -1,8 +1,9 @@
 from django.db import models
 from worldlayers import WorldLayer
 from clients import Client
-import datetime
+import datetime, time
 from django.utils.timezone import utc
+from ..tools import pretty_date
 
 class Totem(models.Model):
     created = models.DateTimeField(editable=False)
@@ -38,9 +39,9 @@ class Totem(models.Model):
         parent.x_num_replies = parent.get_num_replies()
         return parent
 
-    def build_totem_message_tree(self):
+    def build_totem_message_tree(self,check_owner_device_id=None,depth=None):
         parent_message = self.get_parent_message()
-        return parent_message.build_message_tree_from_node()
+        return parent_message.build_message_tree_from_node(check_owner_device_id,depth)
 
     def build_tree_display_repr(self):
         parent_message = self.get_parent_message()
@@ -106,7 +107,7 @@ class TotemMessage(models.Model):
         super(TotemMessage, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return self.id
+        return str(self.id)
 
     def get_direct_children(self):
 
@@ -130,15 +131,37 @@ class TotemMessage(models.Model):
 
         self.owner.save()
 
-    def build_message_tree_from_node(self):
+    def build_message_tree_from_node(self,check_owner_device_id=None,depth=None):
         #TODO - expensive. too many db calls
         node = {}
-        node['message'] = self
-        node['children'] = []
 
-        children = self.get_direct_children()
-        for child in children:
-            node['children'].append(child.build_message_tree_from_node())
+        timestamp = time.mktime(self.created.timetuple())
+
+        node['id'] = self.id
+
+        if self.active == True:
+            node['message'] = self.message
+        else:
+            node['message'] = ""
+
+        node['created'] = str(self.created)
+        node['created_pretty'] = pretty_date(int(timestamp))
+        node['is_owner'] = self.totem.owner.device_id == check_owner_device_id
+        node['active'] = self.active
+
+        if depth == 0:
+            node['num_replies'] = self.get_num_replies()
+        else:
+            node['children'] = []
+            children = self.get_direct_children()
+            node['num_replies'] = len(children)
+
+            if depth != None:
+                depth -= 1
+
+            for child in children:
+                node['children'].append(child.build_message_tree_from_node(check_owner_device_id,depth))
+
         return node
 
     def print_from_node(self,depth=0):
