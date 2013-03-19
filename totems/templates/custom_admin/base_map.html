@@ -33,7 +33,6 @@
             });
 
             google.maps.event.addListener(marker[{{ forloop.counter }}], 'click', function() {
-                    map.setZoom(10);
                     map.setCenter(marker[{{ forloop.counter }}].getPosition());
                     info[{{ forloop.counter}} ].open(map,marker[{{ forloop.counter }}]);
                     setTimeout(function () { info[{{ forloop.counter }}].close(); }, 3000);

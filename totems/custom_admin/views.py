@@ -90,7 +90,7 @@ def clients_activity_map(request,ClientID=None):
             "coors":(log.longitude,log.latitude),
             "label":"R",
             "color":"6b77ff",
-            "message":str(log.longitude)+" "+str(log.latitude),
+            "message":"",
         })
 
     c = {
