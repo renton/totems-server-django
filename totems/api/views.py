@@ -1,6 +1,6 @@
 from django.http import HttpResponse, Http404
 from django.utils import simplejson
-from totems.models import Client, Totem, TotemMessage, WorldLayer, RequestLog
+from totems.models import Client, Totem, TotemMessage, WorldLayer, RequestLog, Mark
 from django.views.decorators.csrf import csrf_exempt                                          
 from totems.tools import lat_long_distance, pretty_date
 import time
@@ -44,6 +44,16 @@ def register(request):
         )
 
         output = {}
+
+        # REPLY NOTIFICATIONS
+        output['reply_notifications'] = []
+        output['show_notification_alert'] = False
+        notifications = TotemMessage.get_all_reply_notifications_for_client(registered_client)
+        for notification in notifications:
+            if notification.reply_notification_read == False:
+                notification.view_reply_notification()
+                output['show_notification_alert'] = True
+            output['reply_notifications'].append({'id':notification.id,'longitude':notification.totem.longitude,'latitude':notification.totem.latitude})
 
         output['is_banned'] = registered_client.is_banned
         output['is_active'] = registered_client.active
@@ -205,13 +215,13 @@ def fetch_totems(request):
             timestamp_created = time.mktime(totem.created.timetuple())
             timestamp_last_activity = time.mktime(totem.last_activity.timetuple())
 
+            parent_message = totem.get_parent_message()
             # don't pass content of inactive messages
             if parent_message.active == True:
                 message_text = parent_message.message
             else:
                 message_text = ""
 
-            parent_message = totem.get_parent_message()
             output['totems'].append({
                 'id':totem.id,
                 'message':message_text,
@@ -228,6 +238,15 @@ def fetch_totems(request):
 
         output['total'] = len(output['totems'])
         
+        # REPLY NOTIFICATIONS
+        output['new_reply_notifications'] = []
+        output['show_notification_alert'] = False
+        notifications = TotemMessage.get_all_unread_reply_notifications_for_client(client)
+        for notification in notifications:
+            notification.view_reply_notification()
+            output['new_reply_notifications'].append({'id':notification.id,'longitude':notification.totem.longitude,'latitude':notification.totem.latitude})
+            output['show_notification_alert'] = True
+
         output['success'] = True
 
         RequestLog.add_request_log(client,longitude,latitude)
@@ -340,6 +359,10 @@ def fetch_messages(request):
             is_parent_totem_message = (message.parent_message == None) 
             timestamp = time.mktime(message.created.timetuple())
 
+            # SET REPLY NOTIFICATIONS AS READ
+            if message.parent_message.owner == client:
+                message.view_reply_notification_replies()
+
             if message.active == True:
                 message_text = message.message
             else:
@@ -359,10 +382,61 @@ def fetch_messages(request):
             })
 
         output['total'] = len(output['messages'])
+
+        # REPLY NOTIFICATIONS
+        output['new_reply_notifications'] = []
+        output['show_notification_alert'] = False
+        notifications = TotemMessage.get_all_unread_reply_notifications_for_client(client)
+        for notification in notifications:
+            notification.view_reply_notification()
+            output['new_reply_notifications'].append({'id':notification.id,'longitude':notification.totem.longitude,'latitude':notification.totem.latitude})
+            output['show_notification_alert'] = True
         
         output['success'] = True
 
         RequestLog.add_request_log(client,longitude,latitude)
+        client.save()
+
+        return HttpResponse(simplejson.dumps(output), 'application/json')
+    else:
+        raise Http404
+
+# ===========================================
+# ----- FETCH_MESSAGES -----
+# ===========================================
+
+@csrf_exempt
+def toggle_flag(request):
+
+    if request.method == "POST":
+
+        print request.POST.keys()
+
+        required_params = [
+            'device_id',
+            'message_id',
+        ]
+
+        for param in required_params:
+            if param not in request.POST.keys():
+                raise Http404
+
+        # client must exist in system and be registered
+        try:
+            client = Client.objects.get(device_id=request.POST['device_id'])
+        except:
+            raise Http404
+
+        # message must exist in system and be registered
+        try:
+            message = TotemMessage.objects.get(id=request.POST['message_id'])
+        except:
+            raise Http404
+
+        output = {}
+        output['state'] = Mark.create_or_toggle_mark(client,message,Mark.MARK_TYPES['flag'])
+        output['success'] = True
+
         client.save()
 
         return HttpResponse(simplejson.dumps(output), 'application/json')

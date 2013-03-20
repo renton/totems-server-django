@@ -92,6 +92,8 @@ class TotemMessage(models.Model):
     totem = models.ForeignKey(Totem)
     parent_message = models.ForeignKey('self', null=True, blank=True)
     owner = models.ForeignKey(Client)
+    reply_notification = models.BooleanField(default=False)
+    reply_notification_read = models.BooleanField(default=False)
 
     class Meta:
         app_label = 'totems'
@@ -129,7 +131,25 @@ class TotemMessage(models.Model):
         reply.totem = self.totem
         reply.save()
 
+        if self.owner != client:
+            self._set_reply_notification()
+
         self.owner.save()
+
+    def _set_reply_notification(self):
+        self.reply_notification = True
+        self.reply_notification_read = False
+        self.save()
+
+    def view_reply_notification(self):
+        self.reply_notification = True
+        self.reply_notification_read = True
+        self.save()
+
+    def view_reply_notification_replies(self):
+        self.reply_notification = False
+        self.reply_notification_read = False
+        self.save()
 
     def build_message_tree_from_node(self,check_owner_device_id=None,depth=None):
         #TODO - expensive. too many db calls
@@ -183,6 +203,19 @@ class TotemMessage(models.Model):
     def remove(self):
         self.active = False
         self.save()
+
+    @property
+    def get_flag_count(self):
+        from marks import Mark
+        return Mark.objects.filter(totem_message=self,mark_type=Mark.MARK_TYPES['flag']).count()
+
+    @staticmethod
+    def get_all_reply_notifications_for_client(client):
+        return TotemMessage.objects.filter(owner=client,reply_notification=True)
+
+    @staticmethod
+    def get_all_unread_reply_notifications_for_client(client):
+        return TotemMessage.objects.filter(owner=client,reply_notification=True,reply_notification_read=False)
 
     @staticmethod
     def get_message_count_by_client(client):

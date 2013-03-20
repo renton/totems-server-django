@@ -7,4 +7,5 @@ urlpatterns = patterns('',
     url(r'^fetch_totems/$', 'totems.api.views.fetch_totems', name='fetch_totems'),
     url(r'^fetch_messages/$', 'totems.api.views.fetch_messages', name='fetch_messages'),
     url(r'^fetch_totem_thread/$', 'totems.api.views.fetch_totem_thread', name='fetch_totem_thread'),
+    url(r'^toggle_flag/$', 'totems.api.views.toggle_flag', name='toggle_flag'),
 )

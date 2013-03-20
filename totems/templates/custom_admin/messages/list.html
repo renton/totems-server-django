@@ -21,9 +21,11 @@
                         created
                     </th>
                     <th>
+                        flag_count
+                    </th>
+                    <th>
                         message
                     </th>
-
                 </tr>
             </thead>
             <tbody>
@@ -48,9 +50,11 @@
                         {{ message.created }}
                     </td>
                     <td>
+                        {{ message.get_flag_count }}
+                    </td>
+                    <td>
                         {{ message.message }}
                     </td>
-
                 </tr>
             {% endfor %}
             </tbody>

@@ -155,7 +155,7 @@ def totems_map_single(request,TotemID):
         "coors":(totem.longitude,totem.latitude),
         "label":"T",
         "color":"ff776b",
-        "message":str(totem.get_parent_message().message)+" ("+str(message.totem.get_message_count())+")",
+        "message":str(totem.get_parent_message().message)+" ("+str(totem.get_message_count())+")",
         "totem_id":totem.id,
     })
     c = {
@@ -247,6 +247,17 @@ def apitest_fetch_totem_thread(request):
         'device_id',
         'totem_id',
         'depth',
+    ]
+
+    return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
+
+def apitest_toggle_flag(request):
+    c={}
+
+    c['api_call_name'] = "toggle_flag"
+    c['required_params'] = [
+        'device_id',
+        'message_id',
     ]
 
     return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))

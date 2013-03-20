@@ -6,20 +6,21 @@ from django.utils.timezone import utc
 
 class Mark(models.Model):
 
-    MARK_TYPE_SPAM = 0
-    MARK_TYPE_REPORT = 1
-    MARK_TYPE_UPVOTE = 2
-    MARK_TYPE_DOWNVOTE = 3
+    MARK_TYPES = {
+        "flag":0,
+    }
 
     created = models.DateTimeField(editable=False)
+    last_activity = models.DateTimeField()
     client = models.ForeignKey(Client)
     totem_message = models.ForeignKey(TotemMessage)
-    state = models.BooleanField(default=True)
     mark_type = models.IntegerField(null=False)
-    last_activity = models.DateTimeField()
 
     class Meta:
-        app_label = 'core'
+        app_label = 'totems'
+        verbose_name = 'mark'
+        verbose_name_plural = 'marks'
+        unique_together = ("client", "totem_message")
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -27,27 +28,22 @@ class Mark(models.Model):
         self.last_activity = datetime.datetime.utcnow().replace(tzinfo=utc)
         super(Mark, self).save(*args, **kwargs)
 
-    def toggle(self):
-        self.state = not self.state
-        self.save()
+    def __unicode__(self):
+        return str(self.client.device_id)+" : "+str(self.totem_message.message)
 
     @staticmethod
     def create_or_toggle_mark(client,message,mark_type):
         mark,created = Mark.objects.get_or_create(client=client,totem_message=message,mark_type=mark_type)
         if created:
             mark.save()
+            return True
         else:
-            mark.toggle()
-        return mark
+            mark.delete()
+            return False
 
     @staticmethod
     def get_mark_count_for_message(message,mark_type):
         return Mark.objects.filter(totem_message=message,mark_type=mark_type,state=True).count()
-
-    @staticmethod
-    def get_marks_against(client,mark_type):
-        #mark_type can be a list
-        pass
 
     @staticmethod
     def is_marked_for_client(client,message,mark_type):
