@@ -37,8 +37,8 @@ def register(request):
         registered_client,created = Client.get_or_register_client(
             request.POST['device_id'],
             request.POST['device_name'],
-            request.POST['device_version'],
             request.POST['device_platform'],
+            request.POST['device_version'],
             request.POST['registration_longitude'],
             request.POST['registration_latitude']
         )
