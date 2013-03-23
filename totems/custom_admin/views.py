@@ -44,6 +44,7 @@ def clients_registration_map(request):
             "label":"R",
             "color":"ff776b",
             "message":"",
+            "totem_id":"null",
         })
 
     c = {
@@ -83,6 +84,7 @@ def clients_activity_map(request,ClientID=None):
             "label":"R",
             "color":"6b77ff",
             "message":"",
+            "totem_id":"null",
         })
     for message in messages:
        points.append({
