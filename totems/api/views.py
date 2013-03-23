@@ -5,8 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 from totems.tools import lat_long_distance, pretty_date
 import time
 
-TOTEMS_MAX_FETCH_RANGE_LATITUDE = 0.005
-TOTEMS_MAX_FETCH_RANGE_LONGITUDE = 0.0025
+TOTEMS_MAX_FETCH_RANGE_LATITUDE = 0.004
+TOTEMS_MAX_FETCH_RANGE_LONGITUDE = 0.002
 
 MAX_MESSAGES_PER_PAGE = 10
 
@@ -267,7 +267,7 @@ def fetch_totem_thread(request):
 
         required_params = [
             'device_id',
-            'totem_id',
+            'parent_message_id',
             'depth',
         ]
 
@@ -283,11 +283,11 @@ def fetch_totem_thread(request):
 
         # totem must exist in system
         try:
-            totem = Totem.objects.get(id=request.POST['totem_id'])
+            parent_message = TotemMessage.objects.get(id=request.POST['parent_message_id'])
         except:
             raise Http404
 
-        messages = totem.build_totem_message_tree(request.POST['device_id'],int(request.POST['depth']))
+        messages = parent_message.build_message_tree_from_node(request.POST['device_id'],int(request.POST['depth']))
 
         output = {}
         output['messages'] = messages

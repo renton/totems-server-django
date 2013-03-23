@@ -17,7 +17,7 @@ deleted
 {% endif %}
 " style="margin-left:{{ message.0 }}px;" id="msg-{{ message.1.pk }}">
 
-            <h5>{{ message.1.owner.device_id }} at {{ message.1.created }} :</h5>
+            <h5>({{message.1.id}}) {{ message.1.owner.device_id }} at {{ message.1.created }} :</h5>
 
             <p>
                 {{ message.1.message }}

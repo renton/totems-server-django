@@ -259,7 +259,7 @@ def apitest_fetch_totem_thread(request):
     c['api_call_name'] = "fetch_totem_thread"
     c['required_params'] = [
         'device_id',
-        'totem_id',
+        'parent_message_id',
         'depth',
     ]
 

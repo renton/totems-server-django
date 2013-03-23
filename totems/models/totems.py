@@ -168,6 +168,7 @@ class TotemMessage(models.Model):
         node['created_pretty'] = pretty_date(int(timestamp))
         node['is_owner'] = self.totem.owner.device_id == check_owner_device_id
         node['active'] = self.active
+        node['is_totem_head'] = self.is_totem_head()
 
         if depth == 0:
             node['num_replies'] = self.get_num_replies()
@@ -203,6 +204,9 @@ class TotemMessage(models.Model):
     def remove(self):
         self.active = False
         self.save()
+
+    def is_totem_head(self):
+        return self.parent_message == None
 
     @property
     def get_flag_count(self):
