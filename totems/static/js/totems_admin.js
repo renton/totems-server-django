@@ -25,6 +25,29 @@ $(document).ready(function() {
         testapi("api/toggle_flag/")
     });
 
+    $('body').on("click",'#simulate_fetch',function() {
+        lon = $("#map").attr("data-cur-long");
+        lat = $("#map").attr("data-cur-lat");
+
+        data ={'device_id':'admin','longitude':lon,'latitude':lat,'worldlayer_id':1}
+
+        ajax("api/fetch_totems/",data, function(response) {
+
+            for (var i = 0; i < response.totems.length; i++) {
+                placeMarker(
+                    response.totems[i].longitude,
+                    response.totems[i].latitude,
+                    "T",
+                    "ff776b",
+                    response.totems[i].id,
+                    response.totems[i].message
+                );
+            }
+        });
+    });
+    $('body').on("click",'#simulate_add_totem',function() {
+    });
+
     $('body').on("click",".action_render_reply_modal", function() {
         $("#modal_add_reply").modal('show');
         $("#id_parent_message_id").val($(this).attr("data-id"));
@@ -38,73 +61,6 @@ $(document).ready(function() {
             $("#msg-"+message_id).addClass("deleted");
         });
     });
-
-    /*
-    $(".action_mark_spam_message").live("click", function() {
-        message_id = $(this).attr("data-id");
-        data = {"message_id":message_id};
-        ajax("messages/mark/spam/"+message_id+"/",data,function(response) {
-            count = parseInt($("#num_spam_"+message_id).html());
-
-            if(response.state === true) {
-                count++;
-            } else {
-                count--;
-            }
-
-            $("#num_spam_"+message_id).html(count);
-        });
-    });
-
-    $(".action_mark_flag_message").live("click", function() {
-        message_id = $(this).attr("data-id");
-        data = {"message_id":message_id};
-        ajax("messages/mark/flag/"+message_id+"/",data,function(response) {
-            count = parseInt($("#num_flag_"+message_id).html());
-
-            if(response.state === true) {
-                count++;
-            } else {
-                count--;
-            }
-
-            $("#num_flag_"+message_id).html(count);
-
-        });
-    });
-    $(".action_mark_upvote_message").live("click", function() {
-        message_id = $(this).attr("data-id");
-        data = {"message_id":message_id};
-        ajax("messages/mark/upvote/"+message_id+"/",data,function(response) {
-            count = parseInt($("#num_vote_"+message_id).html());
-
-            if(response.state === true) {
-                count++;
-            } else {
-                count--;
-            }
-
-            $("#num_vote_"+message_id).html(count);
-
-        });
-    });
-    $(".action_mark_downvote_message").live("click", function() {
-        message_id = $(this).attr("data-id");
-        data = {"message_id":message_id};
-        ajax("messages/mark/downvote/"+message_id+"/",data,function(response) {
-            count = parseInt($("#num_vote_"+message_id).html());
-
-            if(response.state === true) {
-                count--;
-            } else {
-                count++;
-            }
-
-            $("#num_vote_"+message_id).html(count);
-
-        });
-    });
-*/
 
 });
 

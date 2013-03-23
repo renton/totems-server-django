@@ -6,40 +6,118 @@
 <script>
 
     var map;
+    var marker = new Array();
+    var info = new Array();
+
+    function placeMarker(longitude,latitude,label,color,totem_id,message) {
+
+        var new_marker = new google.maps.Marker(
+                {
+                    map: map,
+                    position: new google.maps.LatLng(latitude,longitude),
+                    icon: "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="+label+"|"+color,
+                    animation: google.maps.Animation.DROP,
+                }
+        );
+
+        var content_message = String(longitude)+", "+String(latitude)+" <br />";
+        if (totem_id != null) {
+            content_message += "<a href='/panel/totems/"+totem_id+"/'>"+String(message)+"</a>"
+        } else {
+            content_message += String(message)
+        }
+
+        var new_info = new google.maps.InfoWindow({
+                content: content_message
+        });
+
+        google.maps.event.addListener(new_marker, 'click', function() {
+                map.setCenter(new_marker.getPosition());
+                new_info.open(map,new_marker);
+                setTimeout(function () { new_info.close(); }, 3000);
+        });
+
+        marker.push(new_marker);
+        info.push(new_info);
+    }
+
+    function clearMarkers() {
+
+        for (var i = 0; i < marker.length; i++) {
+            marker[i].setMap(null);
+        }
+
+        marker = Array();
+        info = Array();
+    }
 
     function initialize() {
         map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 3,
-            center: new google.maps.LatLng({{ points.0.coors.1 }}, {{ points.0.coors.0 }}),
+            {% if zoom_override %}
+                zoom: {{ zoom_override }},
+            {% else %}
+                zoom: 3,
+            {% endif %}
+            {% if points.0 %}
+                center: new google.maps.LatLng({{ points.0.coors.1 }}, {{ points.0.coors.0 }}),
+            {% else %}
+                center: new google.maps.LatLng(43.01376488,-81.20021337),
+            {% endif %}
             mapTypeId: google.maps.MapTypeId.ROADMAP
         });
-        var marker = new Array();
-        var info = new Array();
+        var you_marker;
+        var info_you_marker;
         {% for point in points %}
-            marker[{{ forloop.counter }}] = new google.maps.Marker(
-                    {
-                        map: map,
-                        position: new google.maps.LatLng({{ point.coors.1 }},{{ point.coors.0 }}),
-                        icon: "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld={{ point.label }}|{{ point.color }}",
-                    }
+
+            placeMarker(
+                {{ point.coors.0 }},
+                {{ point.coors.1 }},
+                "{{ point.label }}",
+                "{{ point.color }}",
+                {{ point.totem_id }},
+                "{{ point.message|safe }}"
             );
 
-            info[{{ forloop.counter }}] = new google.maps.InfoWindow({
-                {% if point.totem_id %}
-                    content: "{{ point.coors.0 }}, {{ point.coors.1 }} <br /> <a href='{% url "totems_detail" point.totem_id %}'>{{ point.message|safe }}</a>",
-                {% else %}
-                    content: "{{ point.coors.0 }}, {{ point.coors.1 }} <br /> {{ point.message|safe }}",
-                {% endif %}
-            });
-
-            google.maps.event.addListener(marker[{{ forloop.counter }}], 'click', function() {
-                    map.setCenter(marker[{{ forloop.counter }}].getPosition());
-                    info[{{ forloop.counter}} ].open(map,marker[{{ forloop.counter }}]);
-                    setTimeout(function () { info[{{ forloop.counter }}].close(); }, 3000);
-            });
-
         {% endfor %}
+
+        {% if sim_mode %}
+
+            google.maps.event.addListener(map, 'click', function(event) {
+                placeYourMarker(event.latLng);
+
+                info_you_marker = new google.maps.InfoWindow({
+                    content: "( "+String(event.latLng.lng())+" , "+String(event.latLng.lat())+" )",
+                });
+
+                google.maps.event.addListener(you_marker, 'click', function() {
+                        info_you_marker.open(map,you_marker);
+                        setTimeout(function () { info_you_marker.close(); }, 3000);
+                });
+            });
+
+           function placeYourMarker(location) {
+
+                if (you_marker == undefined) {
+                    you_marker = new google.maps.Marker({
+                        position: location,
+                        icon: "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=Y|cccccc",
+                        map: map,
+                        animation: google.maps.Animation.DROP,
+
+                    });
+                } else {
+                    you_marker.setPosition(location);
+                }
+                clearMarkers();
+
+                $("#map").attr("data-cur-long",location.lng());
+                $("#map").attr("data-cur-lat",location.lat());
+                map.setCenter(location);
+            }
+        {% endif %}
+
     }
+
 
     </script>
     <style>
@@ -55,12 +133,12 @@
 
 {% block content %}
     <div class="row">
-        <div class="span12">
+        <div class="span12" style="padding-bottom:10px;">
         {% block header_content %}
         {% endblock %}
         </div>
         <div class="span12">
-            <div id="map"></div>
+            <div id="map" data-cur-long="0" data-cur-lat="0"></div>
 
         </div>
     </div>

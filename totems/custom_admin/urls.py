@@ -22,6 +22,8 @@ urlpatterns = patterns('',
     url(r'^messages/$', 'totems.custom_admin.views.messages_list', name='messages_list'),
     url(r'^messages/delete/(?P<MessageID>.+)/$', 'totems.custom_admin.views.ajax_delete_message'),
 
+    url(r'^simulate/$', 'totems.custom_admin.views.simulate_app', name='simulate_app'),
+
 
     #url(r'^clients/activity_map/$', 'totems.custom_admin.views.clients_activity_map', name='clientsActivityMapEmpty'),
     #url(r'^clients/activity_map/(?P<ClientID>.+)/$', 'totems.custom_admin.views.clients_activity_map', name='clientsActivityMap'),

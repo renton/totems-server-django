@@ -140,7 +140,7 @@ def totems_map(request):
             "coors":(totem.longitude,totem.latitude),
             "label":"T",
             "color":"ff776b",
-            "message":str(totem.get_parent_message().message)+" ("+str(message.totem.get_message_count())+")",
+            "message":str(totem.get_parent_message().message)+" ("+str(totem.get_message_count())+")",
             "totem_id":totem.id,
         })
     c = {
@@ -179,6 +179,18 @@ def ajax_delete_message(request,MessageID):
     msg_to_delete = TotemMessage.objects.get(pk=MessageID)
     msg_to_delete.remove()
     return HttpResponse(simplejson.dumps({'success':True,'message':MessageID}))
+
+# ========================================
+# --- SIMULATOR ---
+# ========================================
+
+def simulate_app(request):
+
+    c = {
+        'zoom_override':18,
+        'sim_mode':True,
+    }
+    return render_to_response("custom_admin/simulator/map.html",c,context_instance=RequestContext(request))
 
 # ========================================
 # --- API TEST ---
