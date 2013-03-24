@@ -317,6 +317,8 @@ def fetch_messages(request):
             'page',
         ]
 
+        print request.POST
+
         for param in required_params:
             if param not in request.POST.keys():
                 raise Http404
