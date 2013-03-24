@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from totems.tools import lat_long_distance, pretty_date
 import time
 
-TOTEMS_MAX_FETCH_RANGE_LATITUDE = 0.004
+TOTEMS_MAX_FETCH_RANGE_LATITUDE = 0.002
 TOTEMS_MAX_FETCH_RANGE_LONGITUDE = 0.002
 
 MAX_MESSAGES_PER_PAGE = 10
@@ -203,6 +203,7 @@ def fetch_totems(request):
         totems = Totem.objects.filter(
             longitude__range=(long_low_range,long_high_range),
             latitude__range=(lat_low_range,lat_high_range),
+            active=True,
         )
 
         output = {}
@@ -344,6 +345,7 @@ def fetch_messages(request):
         messages = TotemMessage.objects.filter(
             totem__longitude__range=(long_low_range,long_high_range),
             totem__latitude__range=(lat_low_range,lat_high_range),
+            totem__active=True,
         ).order_by('-created')[
             (int(request.POST['page'])*MAX_MESSAGES_PER_PAGE):
             ((int(request.POST['page'])*MAX_MESSAGES_PER_PAGE)+MAX_MESSAGES_PER_PAGE)
@@ -359,9 +361,11 @@ def fetch_messages(request):
             is_parent_totem_message = (message.parent_message == None) 
             timestamp = time.mktime(message.created.timetuple())
 
+            print message.parent_message
+
             # SET REPLY NOTIFICATIONS AS READ
-            if message.parent_message.owner == client:
-                message.view_reply_notification_replies()
+            #if message.parent_message.owner == client:
+                #message.view_reply_notification_replies()
 
             if message.active == True:
                 message_text = message.message
@@ -376,7 +380,8 @@ def fetch_messages(request):
                 'created_pretty':pretty_date(int(timestamp)),
                 'distance':distance,
                 'is_owner':caller_owns,
-                'is_parent_totem_message':is_parent_totem_message,
+                'is_totem_head':is_parent_totem_message,
+                'totem_id':message.totem.id,
                 'num_replies':message.get_num_replies(),
                 'active':message.active,
             })
