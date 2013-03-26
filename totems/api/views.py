@@ -59,6 +59,7 @@ def register(request):
         output['is_active'] = registered_client.active
         output['created'] = created
 
+        print output
         return HttpResponse(simplejson.dumps(output), 'application/json')
     else:
         raise Http404
@@ -111,6 +112,7 @@ def add_totem(request):
         output = {}
         output['success'] = True
 
+        print output
         return HttpResponse(simplejson.dumps(output), 'application/json')
     else:
         raise Http404
@@ -155,6 +157,7 @@ def add_reply(request):
         output = {}
         output['success'] = True
 
+        print output
         return HttpResponse(simplejson.dumps(output), 'application/json')
     else:
         raise Http404
@@ -253,6 +256,7 @@ def fetch_totems(request):
         RequestLog.add_request_log(client,longitude,latitude)
         client.save()
 
+        print output
         return HttpResponse(simplejson.dumps(output), 'application/json')
     else:
         raise Http404
@@ -363,7 +367,6 @@ def fetch_messages(request):
             is_parent_totem_message = (message.parent_message == None) 
             timestamp = time.mktime(message.created.timetuple())
 
-            print message.parent_message
 
             # SET REPLY NOTIFICATIONS AS READ
             #if message.parent_message.owner == client:
@@ -401,6 +404,7 @@ def fetch_messages(request):
         
         output['success'] = True
 
+        print output
         RequestLog.add_request_log(client,longitude,latitude)
         client.save()
 
@@ -446,6 +450,7 @@ def toggle_flag(request):
 
         client.save()
 
+        print output
         return HttpResponse(simplejson.dumps(output), 'application/json')
     else:
         raise Http404
