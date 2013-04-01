@@ -124,6 +124,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'password_required',
     #'django.contrib.sites',
     #'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -133,6 +134,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'totems',
 )
+
+PASSWORD_REQUIRED_PASSWORD = "R4shomon!"
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

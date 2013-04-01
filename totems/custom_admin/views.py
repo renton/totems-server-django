@@ -36,7 +36,7 @@ def clients_list(request,sort_param=None):
     return render_to_response("custom_admin/clients/list.html",c,context_instance=RequestContext(request))
 
 def clients_registration_map(request):
-    clients = Client.objects.all()
+    clients = Client.objects.all()[:100]
     points = []
     for client in clients:
         points.append({
@@ -51,6 +51,23 @@ def clients_registration_map(request):
         'points':points
     }
     return render_to_response("custom_admin/clients/registration_map.html",c,context_instance=RequestContext(request))
+
+def clients_requests_map(request):
+    logs = RequestLog.objects.all().order_by('-created')[:100]
+    points = []
+    for log in logs:
+        points.append({
+            "coors":(log.longitude,log.latitude),
+            "label":"R",
+            "color":"ff776b",
+            "message":str(log.client.device_id),
+            "totem_id":"null",
+        })
+
+    c = {
+        'points':points
+    }
+    return render_to_response("custom_admin/base_map.html",c,context_instance=RequestContext(request))
 
 def clients_detail(request,ClientID):
     client = Client.objects.get(pk=ClientID)
