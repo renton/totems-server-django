@@ -1,7 +1,6 @@
 var protocol = "http://"
 var host = window.location.host
 var base_url = protocol+host+"/"
-var totems_secret = "6Jai390HAOzjdklql3m1kJac"
 
 $(document).ready(function() {
 

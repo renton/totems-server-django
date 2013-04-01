@@ -175,3 +175,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 TOTEMS_SECRET = "6Jai390HAOzjdklql3m1kJac"
 TOTEMS_ENCRYPTION_KEY = "Cjkaj3Jqijz329AJldj43l"
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'totems.my_context_processor.some_context_processor',
+    'django.contrib.auth.context_processors.auth',
+)
