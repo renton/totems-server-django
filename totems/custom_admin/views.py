@@ -5,9 +5,11 @@ from django.utils import simplejson
 import os
 from totems.models import Client, Totem, TotemMessage, WorldLayer, RequestLog
 from random import randrange
+from password_required.decorators import password_required
 
 ROWS_PER_PAGE = 100
 
+@password_required
 def home(request):
     c = {}
     return render_to_response("custom_admin/base.html",c,context_instance=RequestContext(request))
@@ -16,6 +18,7 @@ def home(request):
 # --- CLIENTS ---
 # ========================================
 
+@password_required
 def clients_list(request,sort_param=None):
     
     if sort_param:
@@ -35,6 +38,7 @@ def clients_list(request,sort_param=None):
 
     return render_to_response("custom_admin/clients/list.html",c,context_instance=RequestContext(request))
 
+@password_required
 def clients_registration_map(request):
     clients = Client.objects.all()[:100]
     points = []
@@ -52,6 +56,7 @@ def clients_registration_map(request):
     }
     return render_to_response("custom_admin/clients/registration_map.html",c,context_instance=RequestContext(request))
 
+@password_required
 def clients_requests_map(request):
     logs = RequestLog.objects.all().order_by('-created')[:100]
     points = []
@@ -69,6 +74,7 @@ def clients_requests_map(request):
     }
     return render_to_response("custom_admin/base_map.html",c,context_instance=RequestContext(request))
 
+@password_required
 def clients_detail(request,ClientID):
     client = Client.objects.get(pk=ClientID)
     totems = Totem.objects.filter(owner=client)
@@ -84,6 +90,7 @@ def clients_detail(request,ClientID):
     }
     return render_to_response("custom_admin/clients/detail.html",c,context_instance=RequestContext(request))
 
+@password_required
 def clients_activity_map(request,ClientID=None):
     if ClientID is not None:
         client = Client.objects.get(pk=ClientID)
@@ -121,6 +128,7 @@ def clients_activity_map(request,ClientID=None):
 # --- TOTEMS ---
 # ========================================
 
+@password_required
 def totems_list(request):
 
     totems = Totem.objects.all().order_by('-last_activity')
@@ -130,6 +138,7 @@ def totems_list(request):
     }
     return render_to_response("custom_admin/totems/list.html",c,context_instance=RequestContext(request))
 
+@password_required
 def totems_detail(request,TotemID):
 
     #TODO proper form
@@ -151,6 +160,7 @@ def totems_detail(request,TotemID):
 
     return render_to_response("custom_admin/totems/detail.html",c,context_instance=RequestContext(request))
 
+@password_required
 def totems_map(request):
     totems = Totem.objects.all()
     points = []
@@ -167,6 +177,7 @@ def totems_map(request):
     }
     return render_to_response("custom_admin/totems/map.html",c,context_instance=RequestContext(request))
 
+@password_required
 def totems_map_single(request,TotemID):
     totem = Totem.objects.get(id=TotemID)
     points = []
@@ -187,6 +198,7 @@ def totems_map_single(request,TotemID):
 # --- MESSAGES ---
 # ========================================
 
+@password_required
 def messages_list(request):
     messages = TotemMessage.objects.all().order_by('-created')
     c = {
@@ -194,6 +206,7 @@ def messages_list(request):
     }
     return render_to_response("custom_admin/messages/list.html",c,context_instance=RequestContext(request))
 
+@password_required
 def messages_list_flags(request):
     raw_messages = TotemMessage.objects.filter(active=True).order_by('-created')
     messages = []
@@ -212,6 +225,7 @@ def messages_list_flags(request):
     }
     return render_to_response("custom_admin/messages/list.html",c,context_instance=RequestContext(request))
 
+@password_required
 def ajax_delete_message(request,MessageID):
     msg_to_delete = TotemMessage.objects.get(pk=MessageID)
     msg_to_delete.remove()
@@ -221,6 +235,7 @@ def ajax_delete_message(request,MessageID):
 # --- SIMULATOR ---
 # ========================================
 
+@password_required
 def simulate_app(request):
 
     c = {
@@ -242,6 +257,7 @@ def simulate_app(request):
 # --- API TEST ---
 # ========================================
 
+@password_required
 def apitest_register(request):
     c={}
 
@@ -257,6 +273,7 @@ def apitest_register(request):
 
     return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
 
+@password_required
 def apitest_add_totem(request):
     c={}
 
@@ -271,6 +288,7 @@ def apitest_add_totem(request):
 
     return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
 
+@password_required
 def apitest_fetch_totems(request):
     c={}
 
@@ -284,6 +302,7 @@ def apitest_fetch_totems(request):
 
     return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
 
+@password_required
 def apitest_add_reply(request):
     c={}
 
@@ -297,6 +316,7 @@ def apitest_add_reply(request):
 
     return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
 
+@password_required
 def apitest_fetch_totem_thread(request):
     c={}
 
@@ -309,6 +329,7 @@ def apitest_fetch_totem_thread(request):
 
     return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
 
+@password_required
 def apitest_toggle_flag(request):
     c={}
 
@@ -320,6 +341,7 @@ def apitest_toggle_flag(request):
 
     return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
 
+@password_required
 def apitest_fetch_messages(request):
     c={}
 

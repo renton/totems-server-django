@@ -1,5 +1,4 @@
 from django.conf.urls import patterns, include, url
-from decorator_include import decorator_include
 from password_required.decorators import password_required
 
 # Uncomment the next two lines to enable the admin:
@@ -9,7 +8,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', include('totems.public.urls')),
-    url(r'^panel/', decorator_include(password_required,'totems.custom_admin.urls')),
+    url(r'^panel/', include('totems.custom_admin.urls')),
     url(r'^api/', include('totems.api.urls')),
     url(r'^password_required/$', 'password_required.views.login'),
 
