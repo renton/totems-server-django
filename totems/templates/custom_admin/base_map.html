@@ -8,6 +8,8 @@
     var map;
     var marker = new Array();
     var info = new Array();
+    var you_marker;
+    var info_you_marker;
 
     function placeMarker(longitude,latitude,label,color,totem_id,message) {
 
@@ -65,8 +67,7 @@
             {% endif %}
             mapTypeId: google.maps.MapTypeId.ROADMAP
         });
-        var you_marker;
-        var info_you_marker;
+
         {% for point in points %}
 
             placeMarker(

@@ -98,12 +98,15 @@ $(document).ready(function() {
             }
         });
     });
-    $('body').on("click",'#simulate_add_totem',function() {
-    });
 
     $('body').on("click",".action_render_reply_modal", function() {
         $("#modal_add_reply").modal('show');
         $("#id_parent_message_id").val($(this).attr("data-id"));
+    });
+    $('body').on("click",".action_render_add_totem_modal", function() {
+        $("#modal_add_totem").modal('show');
+        $("#id_longitude").val($("#map").attr("data-cur-long"));
+        $("#id_latitude").val($("#map").attr("data-cur-lat"));
     });
     $('body').on("click",".action_delete_message", function() {
         message_id = $(this).attr("data-id");

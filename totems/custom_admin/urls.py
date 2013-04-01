@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     url(r'^apitest/toggle_flag/$', 'totems.custom_admin.views.apitest_toggle_flag', name='apitest_toggle_flag'),
     url(r'^apitest/add_reply/$', 'totems.custom_admin.views.apitest_add_reply', name='apitest_add_reply'),
     url(r'^messages/$', 'totems.custom_admin.views.messages_list', name='messages_list'),
+    url(r'^messages_flags/$', 'totems.custom_admin.views.messages_list_flags', name='messages_list_flags'),
     url(r'^messages/delete/(?P<MessageID>.+)/$', 'totems.custom_admin.views.ajax_delete_message'),
 
     url(r'^simulate/$', 'totems.custom_admin.views.simulate_app', name='simulate_app'),

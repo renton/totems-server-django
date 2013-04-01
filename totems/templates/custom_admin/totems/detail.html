@@ -17,7 +17,7 @@ deleted
 {% endif %}
 " style="margin-left:{{ message.0 }}px;" id="msg-{{ message.1.pk }}">
 
-            <h5>({{message.1.id}}) {{ message.1.owner.device_id }} at {{ message.1.created }} :</h5>
+            <h5>({{message.1.id}}) {{ message.1.owner.device_id }} at {{ message.1.created }} ( Flags: {{ message.1.get_flag_count }}) :</h5>
 
             <p>
                 {{ message.1.message }}
@@ -27,11 +27,6 @@ deleted
 
             <p style="float:right;">
 
-                <button class="spam_btn btn btn-danger action_mark_flag_message
-{% if message.1.x_is_marked_flag %}
-active
-{% endif %}
-" data-id="{{ message.1.pk }}" data-toggle="button"><i class="icon-flag icon-white"></i> Mark Flag</button>
                 {% if message.1.active %}
                     <button class="delete_btn btn btn-inverse action_delete_message" data-id="{{ message.1.pk }}"><i class="icon-trash icon-white"></i> Delete</button>
                 {% endif %}

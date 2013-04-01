@@ -177,6 +177,24 @@ def messages_list(request):
     }
     return render_to_response("custom_admin/messages/list.html",c,context_instance=RequestContext(request))
 
+def messages_list_flags(request):
+    raw_messages = TotemMessage.objects.filter(active=True).order_by('-created')
+    messages = []
+
+    for raw_message in raw_messages:
+        flag_count = raw_message.get_flag_count
+        if flag_count > 0:
+            raw_message.x_get_flag_count = flag_count
+            messages.append(raw_message)
+
+    messages = list(messages)
+    messages.sort(key = lambda row: row.x_get_flag_count, reverse=True)
+
+    c = {
+        'messages':messages
+    }
+    return render_to_response("custom_admin/messages/list.html",c,context_instance=RequestContext(request))
+
 def ajax_delete_message(request,MessageID):
     msg_to_delete = TotemMessage.objects.get(pk=MessageID)
     msg_to_delete.remove()
@@ -192,6 +210,15 @@ def simulate_app(request):
         'zoom_override':18,
         'sim_mode':True,
     }
+
+    #TODO proper form
+    if request.method == "POST":
+        if 'message' in request.POST and 'longitude' in request.POST and 'latitude' in request.POST:
+            if request.POST['message'] != "":
+                admin, created = Client.get_or_register_client("admin")
+                wl1 = WorldLayer.objects.get(id=1)
+                Totem.add_totem(admin,request.POST['longitude'],request.POST['latitude'],request.POST['message'],wl1)
+
     return render_to_response("custom_admin/simulator/map.html",c,context_instance=RequestContext(request))
 
 # ========================================
@@ -289,70 +316,3 @@ def apitest_fetch_messages(request):
         ]
 
     return render_to_response("custom_admin/api_test/base.html",c,context_instance=RequestContext(request))
-
-
-
-'''
-def logs_list(request):
-    logs = RequestLog.objects.all().order_by('-created')
-    c = {
-        'logs':logs
-    }
-    return render_to_response("logs/list.html",c,context_instance=RequestContext(request))
-
-
-
-
-    
-
-
-
-
-def marks_list(request):
-    marks = Mark.objects.all().order_by('-created')
-    c = {
-        'marks':marks
-    }
-    return render_to_response("marks/list.html",c,context_instance=RequestContext(request))
-
-def simulate_traffic(request):
-    new_clients = []
-    for i in range(0,10):
-        c = Client.get_or_register_client(os.urandom(16).encode('hex'))
-        new_clients.append(c)
-
-    new_totems = []
-    for client in new_clients:
-        for j in range(0,10):
-            t = Totem.add_totem(client,Client.create_random_point(),os.urandom(16).encode('hex'),WorldLayer.objects.get())
-            new_totems.append(t)
-
-    for client in new_clients:
-        for totem in new_totems:
-            totem.get_parent_message().reply_message(os.urandom(16).encode('hex'),client)
-
-    c={}
-    return render_to_response("clients/list.html",c,context_instance=RequestContext(request))
-
-
-
-def ajax_mark_message_as_spam(request,MessageID):
-    msg_to_mark = TotemMessage.objects.get(pk=MessageID)
-    spam_mark = Mark.create_or_toggle_mark(Client.get_or_register_client("admin"),msg_to_mark,Mark.MARK_TYPE_SPAM)
-    return HttpResponse(simplejson.dumps({'success':True,'state':spam_mark.state}))
-
-def ajax_mark_message_as_flagged(request,MessageID):
-    msg_to_mark = TotemMessage.objects.get(pk=MessageID)
-    flag_mark = Mark.create_or_toggle_mark(Client.get_or_register_client("admin"),msg_to_mark,Mark.MARK_TYPE_REPORT)
-    return HttpResponse(simplejson.dumps({'success':True,'state':flag_mark.state}))
-
-def ajax_mark_upvote(request,MessageID):
-    msg_to_mark = TotemMessage.objects.get(pk=MessageID)
-    vote_mark = Mark.create_or_toggle_mark(Client.get_or_register_client("admin"),msg_to_mark,Mark.MARK_TYPE_UPVOTE)
-    return HttpResponse(simplejson.dumps({'success':True,'state':vote_mark.state}))
-
-def ajax_mark_downvote(request,MessageID):
-    msg_to_mark = TotemMessage.objects.get(pk=MessageID)
-    vote_mark = Mark.create_or_toggle_mark(Client.get_or_register_client("admin"),msg_to_mark,Mark.MARK_TYPE_DOWNVOTE)
-    return HttpResponse(simplejson.dumps({'success':True,'state':vote_mark.state}))
-'''

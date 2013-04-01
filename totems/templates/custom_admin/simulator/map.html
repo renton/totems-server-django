@@ -3,6 +3,40 @@
 {% block header_content %}
 
     <button id="simulate_fetch" class="btn btn-primary" type="button">Fetch</button>
-    <!--<button id="simulate_add_totem" class="btn btn-primary" type="button">Add Totem</button>-->
+    <button id="simulate_add_totem" class="btn btn-primary action_render_add_totem_modal" type="button">Add Totem</button>
 
+    <div class="modal hide fade" id="modal_add_totem">
+
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+            <h3>Add Totem</h3>
+        </div>
+
+        <form class="form-horizontal" method="post" action=".">
+        {% csrf_token %}
+            <div class="modal-body">
+
+                    <fieldset>
+
+                        <div class="control-group">
+
+                            <label class="control-label">Message</label>
+
+                            <div class="controls">
+                                <textarea name="message" id="id_message" class="input-xlarge" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="longitude" id="id_longitude" value="test" />
+                        <input type="hidden" name="latitude" id="id_latitude" value="test" />
+
+                    </fieldset>
+            </div>
+
+            <div class="modal-footer">
+                <a class="btn" data-dismiss="modal">Close</a>
+                <button class="btn btn-primary" type="submit">Add</button>
+            </div>
+        </form>
+    </div>
 {% endblock %}
