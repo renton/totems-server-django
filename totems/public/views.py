@@ -1,7 +1,6 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 
 def home(request):
-    c = {}
-    return render_to_response("public/home.html",c,context_instance=RequestContext(request))
+    raise Http404
